@@ -13,15 +13,12 @@ export const TILE_HEIGHT=55
 export class TileManager extends Component {
     //瓦片地图动态生成
   init(spriteFrame:SpriteFrame,i:number ,j:number){
-        //渲染瓦片
         const sprite= this.addComponent(Sprite)
-         //通过cocos的资源加载获取resources中的瓦片资源,拿不到就拿第一张图片
         sprite.spriteFrame = spriteFrame
-
         const transform= this.getComponent(UITransform)
         //设置图片宽高
         transform.setContentSize(TILE_WIDTH,TILE_HEIGHT)
-
+        //设置位置
         this.node.setPosition(i*TILE_WIDTH,-j*TILE_HEIGHT)
     }
   }

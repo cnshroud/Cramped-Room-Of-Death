@@ -9,3 +9,8 @@ export const createUINode=(name:string='')=>{
 
   return node
 }
+
+//瓦片图片随机,竖墙、横墙等图片是有不同样式的图片的
+export const randomByRange=(start:number,end:number)=>
+  Math.floor(start +(end-start)*Math.random())
+
