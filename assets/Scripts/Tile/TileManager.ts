@@ -20,6 +20,6 @@ export class TileManager extends Component {
         transform.setContentSize(TILE_WIDTH,TILE_HEIGHT)
         //设置位置
         this.node.setPosition(i*TILE_WIDTH,-j*TILE_HEIGHT)
-    }
   }
+}
 

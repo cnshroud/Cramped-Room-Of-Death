@@ -10,4 +10,14 @@ export class DataManager extends Singleton{
   mapInfo:Array<Array<ITile>>
   mapRowCount:number
   mapColCount:number
+  //关卡信息
+  levelIndex:number=1
+
+  //重置数据中心(关卡信息不用清空)
+  reset(){
+    this.mapInfo=[]
+    this.mapRowCount=0
+    this.mapColCount=0
+
+  }
 }

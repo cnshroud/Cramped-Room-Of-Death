@@ -5,12 +5,25 @@ import { createUINode } from '../../Utils';
 import levels, { ILevel } from '../../Levels';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 import { DataManager } from '../../Runtime/DataManager';
+import { EventManager } from '../../Runtime/EventManager';
+import { EVENT_ENUM } from '../../Enum';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')
 export class BattleManager extends Component {
     level:ILevel
     stage:Node
+
+
+    onLoad(){
+        //加载时在渲染中添加nextLevel方法
+        EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL,this.nextLevel,this)
+    }
+    onDestroy(){
+         //加载时在渲染中添加nextLevel方法
+         EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL,this.nextLevel)
+    }
+
     start() {
        this.generateStage()
         this.initLevel()
@@ -18,16 +31,32 @@ export class BattleManager extends Component {
     }
 
     initLevel(){
-        const level = levels[`Level${1}`]
+        const level = levels[`Level${DataManager.Instance.levelIndex}`]
         if(level){
+            //加载地图前先清空上个地图的信息
+            this.clearLevel()
+            //加载地图
             this.level=level
             DataManager.Instance.mapInfo=this.level.mapInfo
             DataManager.Instance.mapRowCount=this.level.mapInfo.length ||0
             DataManager.Instance.mapColCount=this.level.mapInfo[0].length ||0
-
-
             this.generateTileMap()
         }
+    }
+    //下一关
+    nextLevel(){
+        DataManager.Instance.levelIndex++
+        //重新调用加载地图方法
+        this.initLevel()
+    }
+    //清空地图信息
+    clearLevel(){
+        //不清空会导致第二关的地图位置等没被修改
+        //清空元素
+        this.stage.destroyAllChildren()
+        //把数据中心的相关数据清空
+        DataManager.Instance.reset()
+
     }
     generateStage(){
         this.stage = createUINode()
@@ -37,7 +66,6 @@ export class BattleManager extends Component {
     generateTileMap() {
         //这个游戏有大部分东西都要放到一个对象上的，例如瓦片和人
         const tileMap= createUINode()
-
         tileMap.setParent(this.stage)
         const titleMapManager=tileMap.addComponent(TileMapManager)
         titleMapManager.init()

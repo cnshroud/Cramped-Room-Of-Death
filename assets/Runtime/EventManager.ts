@@ -22,15 +22,13 @@ export class EventManager extends Singleton{
    *    事件名称:[方法，方法，方法]
    *    事件名称:[方法，方法，方法]
    * }
-   *
-   *
    */
   //事件map
 //   private eventDic:Map<string,Array<Function>> =new Map()
 //因为要传入上下文，所以泛型不能为Function，自定义一个IItem
     private eventDic:Map<string,Array<IItem>> =new Map()
 
-//往事件字典里加方法,上下文（可选的）  绑定事件
+  //往事件字典里加方法,上下文（可选的）  绑定事件
   on(eventName:string,func:Function,ctx?:unknown){
     //判断有没有eventName事件
     if(this.eventDic.has(eventName)){

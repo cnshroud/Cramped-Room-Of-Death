@@ -2,6 +2,7 @@
 //把地图资源都放在这
 import { TILE_TYPE_ENUM } from '../Enum';
 import Level1 from './Level1';
+import Level2 from './Level2';
 
 
 
@@ -18,7 +19,9 @@ export interface ILevel{
 
 
 const levels:Record<string,ILevel> ={
-  Level1
+  //这里添加关卡信息ts
+  Level1,
+  Level2,
 }
 
 export default levels;
