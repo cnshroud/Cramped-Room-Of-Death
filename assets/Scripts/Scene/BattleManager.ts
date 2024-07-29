@@ -7,11 +7,13 @@ import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 import { DataManager } from '../../Runtime/DataManager';
 import { EventManager } from '../../Runtime/EventManager';
 import { EVENT_ENUM } from '../../Enum';
+import { PlayerManager } from '../Player/PlayerManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')
 export class BattleManager extends Component {
     level:ILevel
+    //舞台节点
     stage:Node
 
 
@@ -41,6 +43,7 @@ export class BattleManager extends Component {
             DataManager.Instance.mapRowCount=this.level.mapInfo.length ||0
             DataManager.Instance.mapColCount=this.level.mapInfo[0].length ||0
             this.generateTileMap()
+            this.generatePlayer()
         }
     }
     //下一关
@@ -70,6 +73,13 @@ export class BattleManager extends Component {
         const titleMapManager=tileMap.addComponent(TileMapManager)
         titleMapManager.init()
         this.adaptPos()
+    }
+    //加载玩家
+    generatePlayer(){
+        const player= createUINode()
+        player.setParent(this.stage)
+        const playerManager=player.addComponent(PlayerManager)
+        playerManager.init()
     }
 
     //适配屏幕的方法
