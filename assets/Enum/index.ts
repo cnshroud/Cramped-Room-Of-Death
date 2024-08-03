@@ -1,3 +1,4 @@
+//枚举的好处，在你的代码中，你可以使用枚举来定义一组相关的常量，这样可以使代码更加清晰和易于维护。
 //瓦片地图枚举类型
 /**
  * 横着的墙壁
@@ -37,4 +38,14 @@ export enum CONTORLLER_ENUM{
   RIGHT="RIGHT",
   TURNLEFT="TURNLEFT",
   TURNRIGHT="TURNRIGHT"
+}
+//状态机类型
+export enum FSM_PARAMS_TYPE_ENUM{
+  TRIGGER="TRIGGER",
+  NUMBER="NUMBER",
+}
+
+export enum PARAMS_NAME_ENUM{
+  IDLE="IDLE",
+  TURNLEFT="TURNLEFT",
 }
