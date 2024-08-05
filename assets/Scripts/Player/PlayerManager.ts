@@ -39,10 +39,12 @@ export class PlayerManager extends Component {
 
         //加入状态机
         this.fsm =this.addComponent(PlayerStateMachine)
+        //init方法中有state加载的异步逻辑，无法保障setParams之前把state加载完，
+        //所以要用waitingList:Array<Promise<SpriteFrame[]>>=[]
         await this.fsm.init()
         //退出init方法后才进行状态变换
         this.fsm.setParams(PARAMS_NAME_ENUM.IDLE,true)
-
+        console.log("修改后的状态机",this.fsm.getParams(PARAMS_NAME_ENUM.IDLE))
         //使用状态机就不需要渲染了
         // await this.render()
         //把move方法绑定到evenetmanegr

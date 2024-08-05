@@ -1,17 +1,15 @@
-import { animation, AnimationClip, Sprite, SpriteFrame, UITransform } from "cc";
+import { animation, AnimationClip, Sprite, SpriteFrame,} from "cc";
 import { PlayerStateMachine } from "../Scripts/Player/PlayerStateMachine";
-import { TILE_HEIGHT, TILE_WIDTH } from "../Scripts/Tile/TileManager";
 import { ResourceManager } from "../Runtime/ResourceManager";
-
 
 //帧数常量 1秒8帧
 const ANIMATION_SPEED=1/8
-
 
 /**
  * 每个状态都要有播放动画的能力，
  * 所以需要知道自己的animationClip
  * 和animationComponent.play()方法
+ * 把PlayerManager的render方法拆分了
  */
 export default class State {
   private animationClip:AnimationClip
@@ -25,7 +23,7 @@ export default class State {
   ){
     this.init()
   }
-
+  //资源初始化方法
   async init(){
 
         //加载图片资源,因为spriteFrames是个promise,所以需要await,init方法也需要async
@@ -35,7 +33,6 @@ export default class State {
         const spriteFrames=await promise
         //coocs官网的程序化编辑动画剪辑的例子
         this.animationClip = new AnimationClip();
-
 
         const track  = new animation.ObjectTrack(); // 创建一个对象轨道
          // 指定轨道路径，即指定目标对象为 "Sprite" 子节点的 "spriteFrame" 属性
@@ -50,7 +47,8 @@ export default class State {
 
         // 最后将轨道添加到动画剪辑以应用
         this.animationClip.addTrack(track);
-
+        //设置动画剪辑的名称，this.path肯定是不同的，所以可以用this.path来命名，在
+        this.animationClip.name = this.path;
         // 整个动画剪辑的周期
         this.animationClip.duration =frames.length*ANIMATION_SPEED;
         //循环播放,改成自定义的wrapMode

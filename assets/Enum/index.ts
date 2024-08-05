@@ -44,7 +44,7 @@ export enum FSM_PARAMS_TYPE_ENUM{
   TRIGGER="TRIGGER",
   NUMBER="NUMBER",
 }
-
+//状态机参数枚举
 export enum PARAMS_NAME_ENUM{
   IDLE="IDLE",
   TURNLEFT="TURNLEFT",
