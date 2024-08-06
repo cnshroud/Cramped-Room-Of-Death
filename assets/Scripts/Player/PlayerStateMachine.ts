@@ -2,23 +2,9 @@
 import { _decorator, AnimationClip, Component, Node,Animation, SpriteFrame } from 'cc';
 import {FSM_PARAMS_TYPE_ENUM, PARAMS_NAME_ENUM } from '../../Enum';
 import State from '../../Base/State';
-import { StateMachine } from '../../Base/StateMachine';
+import { getInitParamsTrigger, StateMachine } from '../../Base/StateMachine';
 const { ccclass, property } = _decorator;
-//定义一个trigger和number的联合类型
-type ParamsValueType =boolean |number
-  //参数类型
-export interface IParamsValue{
-  type:FSM_PARAMS_TYPE_ENUM,
-  value:ParamsValueType
-}
 
-//通过这个函数返回这个对象，只是为了避免代码重复
-export const  getInitParamsTrigger=()=>{
-  return  {
-    type:FSM_PARAMS_TYPE_ENUM.TRIGGER,
-    value:false
-  }
-}
 
 @ccclass('PlayerStateMachine')
 export class PlayerStateMachine extends StateMachine {
@@ -38,6 +24,7 @@ export class PlayerStateMachine extends StateMachine {
   initParams(){
     this.params.set(PARAMS_NAME_ENUM.IDLE,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.TURNLEFT ,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.DIRECTION ,getInitParamsTrigger())
   }
   //初始化状态机
   initstateMachines(){

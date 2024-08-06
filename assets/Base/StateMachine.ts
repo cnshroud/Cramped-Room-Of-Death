@@ -19,6 +19,13 @@ export const  getInitParamsTrigger=()=>{
     value:false
   }
 }
+//通过这个函数返回这个对象，只是为了避免代码重复,类型是numebr
+export const  getInitParamsNumber=()=>{
+  return  {
+    type:FSM_PARAMS_TYPE_ENUM.NUMBER,
+    value:0
+  }
+}
 
 @ccclass('StateMachine')
 export abstract class StateMachine extends Component {
