@@ -1,6 +1,7 @@
 import { animation, AnimationClip, Sprite, SpriteFrame,} from "cc";
 import { PlayerStateMachine } from "../Scripts/Player/PlayerStateMachine";
 import { ResourceManager } from "../Runtime/ResourceManager";
+import { StateMachine } from "./StateMachine";
 
 //帧数常量 1秒8帧
 const ANIMATION_SPEED=1/8
@@ -15,7 +16,7 @@ export default class State {
   private animationClip:AnimationClip
   //构造函数需要三个参数
    constructor(
-    private fsm:PlayerStateMachine,
+    private fsm:StateMachine,
     //动画播放路径
     private path:string,
     //不传参数就默认播放一次
