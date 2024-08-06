@@ -2,7 +2,7 @@
 import { _decorator, animation, Animation, AnimationClip, Component, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 import { ResourceManager } from '../../Runtime/ResourceManager';
-import { CONTORLLER_ENUM, DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM } from '../../Enum';
+import { CONTORLLER_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM } from '../../Enum';
 import { EventManager } from '../../Runtime/EventManager';
 import { PlayerStateMachine } from './PlayerStateMachine';
 const { ccclass, property } = _decorator;
@@ -19,28 +19,6 @@ export class PlayerManager extends Component {
     private readonly speed:number=1/10
     //状态机变量
     fsm:PlayerStateMachine
-    //方位变量
-    private _dirtection:DIRECTION_ENUM
-    //实体状态
-    private _state:ENTITY_STATE_ENUM
-    //给私有属性设置getset方法
-    get dirtection(){
-        return this._dirtection
-    }
-    set dirtection(newState:DIRECTION_ENUM){
-        this._dirtection=newState
-        this.fsm.setParams(PARAMS_NAME_ENUM.TURNLEFT,DIRECTION_ORDER_ENUM[this.dirtection])
-    }
-    get state(){
-        return this._state
-    }
-    set state(newState:ENTITY_STATE_ENUM){
-        this._state=newState
-        //数据ui分离思想，要先改变状态再渲染改变ui
-        this.fsm.setParams(this._state,true)
-    }
-
-
     update(){
         this.updateXY()
         //设置角色位置，因为y是相反的所以要给-，人物宽度是四个瓦片的宽度，所以要把人物的坐标移动固定位置
@@ -65,11 +43,8 @@ export class PlayerManager extends Component {
         //所以要用waitingList:Array<Promise<SpriteFrame[]>>=[]
         await this.fsm.init()
         //退出init方法后才进行状态变换
-        // this.fsm.setParams(PARAMS_NAME_ENUM.IDLE,true)
-        // console.log("修改后的状态机",this.fsm.getParams(PARAMS_NAME_ENUM.IDLE))
-        //数据ui分离后只需要修改状态即可setParams
-        this.state=ENTITY_STATE_ENUM.IDLE
-
+        this.fsm.setParams(PARAMS_NAME_ENUM.IDLE,true)
+        console.log("修改后的状态机",this.fsm.getParams(PARAMS_NAME_ENUM.IDLE))
         //使用状态机就不需要渲染了
         // await this.render()
         //把move方法绑定到evenetmanegr
@@ -105,17 +80,7 @@ export class PlayerManager extends Component {
         }else if(inputDirction==CONTORLLER_ENUM.LEFT){
             this.targetX-=1
         }else if(inputDirction==CONTORLLER_ENUM.TURNLEFT){
-            //当角色面向上时，点击左转，要面向左边
-            if(this.dirtection===DIRECTION_ENUM.TOP){
-                this.dirtection=DIRECTION_ENUM.LEFT
-            }else if(this.dirtection===DIRECTION_ENUM.LEFT){
-                this.dirtection=DIRECTION_ENUM.BOTTOM
-            }else if(this.dirtection===DIRECTION_ENUM.BOTTOM){
-                this.dirtection=DIRECTION_ENUM.RIGHT
-            }else if(this.dirtection===DIRECTION_ENUM.RIGHT){
-                this.dirtection=DIRECTION_ENUM.TOP
-            }
-           this.state=ENTITY_STATE_ENUM.TURNLEFT
+            this.fsm.setParams(PARAMS_NAME_ENUM.TURNLEFT,true)
         }
     }
 

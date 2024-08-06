@@ -48,27 +48,4 @@ export enum FSM_PARAMS_TYPE_ENUM{
 export enum PARAMS_NAME_ENUM{
   IDLE="IDLE",
   TURNLEFT="TURNLEFT",
-  DIRECTION="DIRECTION",
-}
-//方位枚举
-export enum DIRECTION_ENUM{
-  TOP="TOP",
-  BOTTOM="BOTTOM",
-  LEFT="LEFT",
-  RIGHT="RIGHT",
-}
-
-//实体状态枚举
-export enum ENTITY_STATE_ENUM{
-  IDLE="IDLE",
-  TURNLEFT="TURNLEFT",
-
-}
-//数字枚举，既可以把数字映射成字符串也可以把字符串映射成数字
-export enum DIRECTION_ORDER_ENUM{
-  TOP=0,
-  RIGHT=1,
-  BOTTOM=2,
-  LEFT=3,
-
 }
