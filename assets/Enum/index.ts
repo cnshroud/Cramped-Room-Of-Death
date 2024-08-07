@@ -71,3 +71,8 @@ export enum DIRECTION_ORDER_ENUM{
   LEFT=2,
   RIGHT=3,
 }
+
+//实体类型
+export enum ENTITY_TYPE_ENUM{
+  PLAYER="PLAYER",
+}

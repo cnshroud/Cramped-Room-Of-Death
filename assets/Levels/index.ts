@@ -1,10 +1,18 @@
 //为了统一入口，之后好调用
 //把地图资源都放在这
-import { TILE_TYPE_ENUM } from '../Enum';
+import { DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, TILE_TYPE_ENUM } from '../Enum';
 import Level1 from './Level1';
 import Level2 from './Level2';
 
+//实体,EntityManager会用到
+export interface IEntity{
+  x:number;
+  y:number;
+  type:ENTITY_TYPE_ENUM ;
+  direction:DIRECTION_ENUM;
+  state:ENTITY_STATE_ENUM;
 
+}
 
 //定义类型，这样打代码就有类型提示
 export interface ITile{
