@@ -23,13 +23,15 @@ export class PlayerManager extends Component {
     private _dirtection:DIRECTION_ENUM
     //实体状态
     private _state:ENTITY_STATE_ENUM
+
     //给私有属性设置getset方法
     get dirtection(){
         return this._dirtection
     }
-    set dirtection(newState:DIRECTION_ENUM){
-        this._dirtection=newState
-        this.fsm.setParams(PARAMS_NAME_ENUM.TURNLEFT,DIRECTION_ORDER_ENUM[this.dirtection])
+    set dirtection(newDirection:DIRECTION_ENUM){
+        this._dirtection=newDirection
+        //方向改变时渲染方法
+        this.fsm.setParams(PARAMS_NAME_ENUM.DIRECTION,DIRECTION_ORDER_ENUM[this._dirtection])
     }
     get state(){
         return this._state
@@ -68,6 +70,9 @@ export class PlayerManager extends Component {
         //退出init方法后才进行状态变换
         // this.fsm.setParams(PARAMS_NAME_ENUM.IDLE,true)
         // console.log("修改后的状态机",this.fsm.getParams(PARAMS_NAME_ENUM.IDLE))
+
+        //设置初始方向
+        this.dirtection=DIRECTION_ENUM.TOP
         //数据ui分离后只需要修改状态即可setParams
         this.state=ENTITY_STATE_ENUM.IDLE
 
@@ -106,17 +111,18 @@ export class PlayerManager extends Component {
         }else if(inputDirction==CONTORLLER_ENUM.LEFT){
             this.targetX-=1
         }else if(inputDirction==CONTORLLER_ENUM.TURNLEFT){
-                        //当角色面向上时，点击左转，要面向左边
-                        if(this.dirtection===DIRECTION_ENUM.TOP){
-                            this.dirtection=DIRECTION_ENUM.LEFT
-                        }else if(this.dirtection===DIRECTION_ENUM.LEFT){
-                            this.dirtection=DIRECTION_ENUM.BOTTOM
-                        }else if(this.dirtection===DIRECTION_ENUM.BOTTOM){
-                            this.dirtection=DIRECTION_ENUM.RIGHT
-                        }else if(this.dirtection===DIRECTION_ENUM.RIGHT){
-                            this.dirtection=DIRECTION_ENUM.TOP
-                        }
-                       this.state=ENTITY_STATE_ENUM.TURNLEFT
+            //先改变数据在调用渲染方法
+            //当点击左转时，如果角色面向上时，会转为面向左边
+            if(this.dirtection===DIRECTION_ENUM.TOP){
+                this.dirtection=DIRECTION_ENUM.LEFT
+            }else if(this.dirtection===DIRECTION_ENUM.LEFT){
+                this.dirtection=DIRECTION_ENUM.BOTTOM
+            }else if(this.dirtection===DIRECTION_ENUM.BOTTOM){
+                this.dirtection=DIRECTION_ENUM.RIGHT
+             }else if(this.dirtection===DIRECTION_ENUM.RIGHT){
+                this.dirtection=DIRECTION_ENUM.TOP
+            }
+            this.state=ENTITY_STATE_ENUM.TURNLEFT
         }
     }
 

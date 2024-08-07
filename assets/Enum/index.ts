@@ -67,7 +67,7 @@ export enum ENTITY_STATE_ENUM{
 //数字枚举，既可以把数字映射成字符串也可以把字符串映射成数字
 export enum DIRECTION_ORDER_ENUM{
   TOP=0,
-  RIGHT=1,
-  BOTTOM=2,
-  LEFT=3,
+  BOTTOM=1,
+  LEFT=2,
+  RIGHT=3,
 }

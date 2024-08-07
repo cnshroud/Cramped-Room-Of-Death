@@ -2,6 +2,7 @@
 import { _decorator, AnimationClip, Component, Node,Animation, SpriteFrame } from 'cc';
 import { FSM_PARAMS_TYPE_ENUM } from '../Enum';
 import State from './State';
+import { SubStateMachine } from './SubStateMachine';
 
 const { ccclass, property } = _decorator;
 //定义一个trigger和number的联合类型
@@ -31,9 +32,9 @@ export const  getInitParamsNumber=()=>{
 export abstract class StateMachine extends Component {
   //状态机需要一个参数列表一个状态机列表
   params:Map<string,IParamsValue> = new Map()
-  stateMachines:Map<string,State> = new Map()
+  stateMachines:Map<string,State | SubStateMachine> = new Map()
   //当前状态
-  private _currentState:State = null
+  private _currentState:State | SubStateMachine = null
   animationComponent:Animation
   //为了把异步操作都放在list里面
   waitingList:Array<Promise<SpriteFrame[]>>=[]
@@ -77,10 +78,6 @@ export abstract class StateMachine extends Component {
 
   //初始化方法
   abstract init() :void
-
-
-
-
   //当参数改变时执行run方法
   abstract run():void
 }

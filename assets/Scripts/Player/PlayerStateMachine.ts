@@ -1,8 +1,9 @@
 //有限状态机
 import { _decorator, AnimationClip, Component, Node,Animation, SpriteFrame } from 'cc';
 import {FSM_PARAMS_TYPE_ENUM, PARAMS_NAME_ENUM } from '../../Enum';
-import State from '../../Base/State';
-import { getInitParamsTrigger, StateMachine } from '../../Base/StateMachine';
+import { getInitParamsNumber, getInitParamsTrigger, StateMachine } from '../../Base/StateMachine';
+import idleSubStateMachine from './idleSubStateMachine';
+import TurnLeftSubStateMachine from './TurnLeftSubStateMachine';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerStateMachine')
@@ -23,17 +24,17 @@ export class PlayerStateMachine extends StateMachine {
   initParams(){
     this.params.set(PARAMS_NAME_ENUM.IDLE,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.TURNLEFT ,getInitParamsTrigger())
-    this.params.set(PARAMS_NAME_ENUM.DIRECTION ,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.DIRECTION ,getInitParamsNumber())
   }
   //初始化状态机
   initstateMachines(){
-    //状态机需要根据状态修改参数
-    this.stateMachines.set(PARAMS_NAME_ENUM.IDLE,new State(this,"texture/player/idle/top",AnimationClip.WrapMode.Loop))
-    this.stateMachines.set(PARAMS_NAME_ENUM.TURNLEFT,new State(this,"texture/player/turnleft/top"))
+    //状态机需要根据状态修改参数，
+    this.stateMachines.set(PARAMS_NAME_ENUM.IDLE,new idleSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.TURNLEFT,new TurnLeftSubStateMachine(this))
 
   }
 
-  //在执行过动画之后再把动画变为idle状态
+  //在执行过左转动画之后再把动画变为idle状态
   initAnimationEvent(){
     this.animationComponent.on(Animation.EventType.FINISHED,()=>{
       //拿到动画的名字
@@ -53,12 +54,15 @@ export class PlayerStateMachine extends StateMachine {
     switch(this.currentState){
       case this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
-        //改变状态,如果状态机的TURNLEFT状态为true,则切换到TURNLEFT状态
+        //改变状态,如果状态机的TURNLEFT状态为true,则切换到TURNLEFT状态,根据方向来决定idle的动画上下左右
         if(this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT)
         }else if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
             //如果是idle状态为true,则切换到idle状态
             this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
+        }else{
+          //如果都不是,则保持当前状态，这样才能触发setcurrentState方法中的run方法
+          this.currentState=this.currentState
         }
         break;
       default:

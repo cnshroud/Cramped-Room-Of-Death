@@ -56,7 +56,6 @@ export default class State {
         this.animationClip.wrapMode=this.wrapMode
   }
   run(){
-
         //设置defalutClip
         this.fsm.animationComponent.defaultClip = this.animationClip;
         //播放组件
