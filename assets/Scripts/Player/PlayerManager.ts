@@ -15,7 +15,7 @@ export class PlayerManager extends EntityManager {
 
     async init(){
 
-        //加入状态机
+        //加入状态机脚本
         this.fsm =this.addComponent(PlayerStateMachine)
         //init方法中有state加载的异步逻辑，无法保障setParams之前把state加载完，
         //所以要用waitingList:Array<Promise<SpriteFrame[]>>=[]
@@ -34,7 +34,7 @@ export class PlayerManager extends EntityManager {
         })
 
         //设置初始方向
-        this.dirtection=DIRECTION_ENUM.TOP
+        this.direction=DIRECTION_ENUM.TOP
         //数据ui分离后只需要修改状态即可setParams
         this.state=ENTITY_STATE_ENUM.IDLE
 
@@ -69,26 +69,26 @@ export class PlayerManager extends EntityManager {
     }
 
     //人物移动
-    move(inputDirction:CONTORLLER_ENUM){
-        if(inputDirction==CONTORLLER_ENUM.TOP){
+    move(inputDirection:CONTORLLER_ENUM){
+        if(inputDirection==CONTORLLER_ENUM.TOP){
             this.targetY-=1
-        }else if(inputDirction==CONTORLLER_ENUM.BOTTOM){
+        }else if(inputDirection==CONTORLLER_ENUM.BOTTOM){
             this.targetY+=1
-        }else if(inputDirction==CONTORLLER_ENUM.RIGHT){
+        }else if(inputDirection==CONTORLLER_ENUM.RIGHT){
             this.targetX+=1
-        }else if(inputDirction==CONTORLLER_ENUM.LEFT){
+        }else if(inputDirection==CONTORLLER_ENUM.LEFT){
             this.targetX-=1
-        }else if(inputDirction==CONTORLLER_ENUM.TURNLEFT){
+        }else if(inputDirection==CONTORLLER_ENUM.TURNLEFT){
             //先改变数据在调用渲染方法
             //当点击左转时，如果角色面向上时，会转为面向左边
-            if(this.dirtection===DIRECTION_ENUM.TOP){
-                this.dirtection=DIRECTION_ENUM.LEFT
-            }else if(this.dirtection===DIRECTION_ENUM.LEFT){
-                this.dirtection=DIRECTION_ENUM.BOTTOM
-            }else if(this.dirtection===DIRECTION_ENUM.BOTTOM){
-                this.dirtection=DIRECTION_ENUM.RIGHT
-             }else if(this.dirtection===DIRECTION_ENUM.RIGHT){
-                this.dirtection=DIRECTION_ENUM.TOP
+            if(this.direction===DIRECTION_ENUM.TOP){
+                this.direction=DIRECTION_ENUM.LEFT
+            }else if(this.direction===DIRECTION_ENUM.LEFT){
+                this.direction=DIRECTION_ENUM.BOTTOM
+            }else if(this.direction===DIRECTION_ENUM.BOTTOM){
+                this.direction=DIRECTION_ENUM.RIGHT
+             }else if(this.direction===DIRECTION_ENUM.RIGHT){
+                this.direction=DIRECTION_ENUM.TOP
             }
             this.state=ENTITY_STATE_ENUM.TURNLEFT
         }

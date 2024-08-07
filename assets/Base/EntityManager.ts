@@ -16,18 +16,18 @@ export class EntityManager extends Component {
     //状态机变量
     fsm:PlayerStateMachine
     //方位变量
-    private _dirtection:DIRECTION_ENUM
+    private _direction:DIRECTION_ENUM
     //实体状态
     private _state:ENTITY_STATE_ENUM
 
     //给私有属性设置getset方法
-    get dirtection(){
-        return this._dirtection
+    get direction(){
+        return this._direction
     }
-    set dirtection(newDirection:DIRECTION_ENUM){
-        this._dirtection=newDirection
+    set direction(newDirection:DIRECTION_ENUM){
+        this._direction=newDirection
         //方向改变时渲染方法
-        this.fsm.setParams(PARAMS_NAME_ENUM.DIRECTION,DIRECTION_ORDER_ENUM[this._dirtection])
+        this.fsm.setParams(PARAMS_NAME_ENUM.DIRECTION,DIRECTION_ORDER_ENUM[this._direction])
     }
     get state(){
         return this._state
@@ -51,8 +51,8 @@ export class EntityManager extends Component {
         //参数直接拿IEntity的参数
         this.x=params.x
         this.y=params.y
-        this.dirtection=this.dirtection
-        this.state=this.state
+        this.direction=params.direction
+        this.state=params.state
 
 
         //加入状态机
