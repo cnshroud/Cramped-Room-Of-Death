@@ -3,7 +3,6 @@
 import { DIRECTION_ORDER_ENUM, PARAMS_NAME_ENUM } from "../Enum"
 import { SubStateMachine } from "./SubStateMachine"
 
-//turnleft子状态机，左转时上下左右的动画
 export default class DirectionSubStateMachine extends SubStateMachine {
     run() {
         //根据方向参数决定子状态机用那个状态

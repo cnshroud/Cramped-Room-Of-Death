@@ -1,5 +1,5 @@
 //有限状态机
-import { _decorator, AnimationClip, Component, Node,Animation, SpriteFrame } from 'cc';
+import { _decorator,Animation, } from 'cc';
 import {FSM_PARAMS_TYPE_ENUM, PARAMS_NAME_ENUM } from '../../Enum';
 import { getInitParamsNumber, getInitParamsTrigger, StateMachine } from '../../Base/StateMachine';
 import idleSubStateMachine from './idleSubStateMachine';

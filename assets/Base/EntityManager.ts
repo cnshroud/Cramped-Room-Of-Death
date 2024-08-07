@@ -3,7 +3,7 @@ import { _decorator, animation, Animation, AnimationClip, Component, Node, Sprit
 
 import { IEntity } from '../Levels';
 import { PlayerStateMachine } from '../Scripts/Player/PlayerStateMachine';
-import { DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, PARAMS_NAME_ENUM } from '../Enum';
+import { DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, PARAMS_NAME_ENUM } from '../Enum';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Scripts/Tile/TileManager';
 const { ccclass, property } = _decorator;
 //实体管理器基类
@@ -19,6 +19,9 @@ export class EntityManager extends Component {
     private _direction:DIRECTION_ENUM
     //实体状态
     private _state:ENTITY_STATE_ENUM
+    //实体类型
+    private type:ENTITY_TYPE_ENUM
+
 
     //给私有属性设置getset方法
     get direction(){
@@ -51,6 +54,7 @@ export class EntityManager extends Component {
         //参数直接拿IEntity的参数
         this.x=params.x
         this.y=params.y
+        this.type=params.type
         this.direction=params.direction
         this.state=params.state
 

@@ -1,9 +1,10 @@
 
-import { _decorator, animation, Animation, AnimationClip, Component, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
-import { CONTORLLER_ENUM, DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM } from '../../Enum';
+import { _decorator,} from 'cc';
+import { CONTORLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM } from '../../Enum';
 import { EventManager } from '../../Runtime/EventManager';
 import { PlayerStateMachine } from './PlayerStateMachine';
 import { EntityManager } from '../../Base/EntityManager';
+import { DataManager } from '../../Runtime/DataManager';
 const { ccclass, property } = _decorator;
 
 //玩家管理器，管理玩家动画
@@ -70,6 +71,7 @@ export class PlayerManager extends EntityManager {
 
     //人物移动
     move(inputDirection:CONTORLLER_ENUM){
+        console.log("地图信息",DataManager.Instance.tileInfo)
         if(inputDirection==CONTORLLER_ENUM.TOP){
             this.targetY-=1
         }else if(inputDirection==CONTORLLER_ENUM.BOTTOM){

@@ -1,6 +1,6 @@
 
-import { _decorator, assert, Component, error, Layers, Node, random, resources, Sprite, spriteAssembler, SpriteFrame, UITransform } from 'cc';
-const { ccclass, property } = _decorator;
+import { _decorator, Component } from 'cc';
+const { ccclass } = _decorator;
 import { TileManager } from './TileManager';
 import { createUINode, randomByRange } from '../../Utils';
 import { DataManager } from '../../Runtime/DataManager';
@@ -20,10 +20,14 @@ export class TileMapManager extends Component {
     //
      const spriteFrames = await ResourceManager.Instance.loadDir("texture/tile/tile")
      const {mapInfo} = DataManager.Instance
+    //加载dataManager中的地图信息
+    DataManager.Instance.tileInfo=[]
+
      //瓦片地图信息是一个二维数组，所以用双重for循环遍历出每一片瓦片的src和type
     for(let i = 0; i < mapInfo.length; i++){
       //每一列
       const column = mapInfo[i]
+      DataManager.Instance.tileInfo[i]=[]
       //每一项
       for(let j = 0; j < column.length; j++){
         const item = column[j]
@@ -45,7 +49,11 @@ export class TileMapManager extends Component {
         const spriteFrame = spriteFrames.find(v=>v.name===imgSrc) ||spriteFrames[0]
         //给节点加上TileManager方法
         const tileManager=  node.addComponent(TileManager)
-        tileManager.init(spriteFrame,i,j)
+
+        const type  = item.type
+        tileManager.init(type,spriteFrame,i,j)
+        //设置角色脚下的地图信息
+        DataManager.Instance.tileInfo[i][j]=tileManager
         //给瓦片设置为该节点的子类
         node.setParent(this.node)
     }
