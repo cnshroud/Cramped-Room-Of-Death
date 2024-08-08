@@ -44,8 +44,9 @@ export class BattleManager extends Component {
             DataManager.Instance.mapRowCount=this.level.mapInfo.length ||0
             DataManager.Instance.mapColCount=this.level.mapInfo[0].length ||0
             this.generateTileMap()
-            this.generatePlayer()
+
             this.generateEnemies()
+            this.generatePlayer()
         }
     }
     //下一关
@@ -68,27 +69,31 @@ export class BattleManager extends Component {
         this.stage.setParent(this.node)
     }
 
-    generateTileMap() {
+    async generateTileMap() {
         //这个游戏有大部分东西都要放到一个对象上的，例如瓦片和人
         const tileMap= createUINode()
-        tileMap.setParent(this.stage)
+        await tileMap.setParent(this.stage)
         const titleMapManager=tileMap.addComponent(TileMapManager)
         titleMapManager.init()
         this.adaptPos()
     }
     //加载玩家
-    generatePlayer(){
+    async generatePlayer(){
         const player= createUINode()
         player.setParent(this.stage)
         const playerManager=player.addComponent(PlayerManager)
-        playerManager.init()
+        await playerManager.init()
+        DataManager.Instance.player=playerManager
+        //当玩家生成是调用玩家出生事件
+        EventManager.Instance.emit(EVENT_ENUM.PLAYER_BORN,true)
     }
     //加载敌人
-    generateEnemies(){
+    async generateEnemies(){
         const enemy= createUINode()
         enemy.setParent(this.stage)
         const woodenSkeletonManager=enemy.addComponent(WoodenSkeletonManager)
-        woodenSkeletonManager.init()
+        await woodenSkeletonManager.init()
+        DataManager.Instance.enemies.push(woodenSkeletonManager)
     }
 
     //适配屏幕的方法

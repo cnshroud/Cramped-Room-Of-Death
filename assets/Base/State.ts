@@ -43,7 +43,7 @@ export default class State {
         //map方法会遍历数组中的每个元素，并对每个元素执行提供的函数。
         //回调函数中的参数顺序是固定的：第一个参数是当前元素，第二个参数是当前元素的索引（如果提供了第二个参数的话）
 
-        const frames:Array<[number,SpriteFrame]> =sortSpriteFrame(spriteFrames) .map((item,index)=>[ANIMATION_SPEED*index,item])
+        const frames:Array<[number,SpriteFrame]> =sortSpriteFrame(spriteFrames).map((item,index)=>[ANIMATION_SPEED*index,item])
 
         track.channel.curve.assignSorted(frames);
 

@@ -14,6 +14,9 @@ export class PlayerManager extends EntityManager {
     targetY:number=0
     private readonly speed:number=1/10
 
+    //判断是否移动
+    isMoving=false
+
     async init(){
 
         //加入状态机脚本
@@ -64,9 +67,12 @@ export class PlayerManager extends EntityManager {
             this.y+=this.speed
         }
         //当角色坐标和目标坐标差距小于0.1时，认为角色已经到达目标坐标，此时将角色坐标设置为和目标坐标相同
-        if(Math.abs(this.targetX-this.x)<=0.1 &&Math.abs(this.targetY-this.y)<=0.1){
+        if(Math.abs(this.targetX-this.x)<=0.1 &&Math.abs(this.targetY-this.y)<=0.1 && this.isMoving){
+            this.isMoving=false
             this.x=this.targetX
             this.y=this.targetY
+            //当角色到达目标坐标后，执行，isMoving是为了防止多次触发
+            EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         }
     }
     //人物移动前处理用户输入的方法
@@ -83,12 +89,16 @@ export class PlayerManager extends EntityManager {
     move(inputDirection:CONTORLLER_ENUM){
         if(inputDirection==CONTORLLER_ENUM.TOP){
             this.targetY-=1
+            this.isMoving=true
         }else if(inputDirection==CONTORLLER_ENUM.BOTTOM){
             this.targetY+=1
+            this.isMoving=true
         }else if(inputDirection==CONTORLLER_ENUM.RIGHT){
             this.targetX+=1
+            this.isMoving=true
         }else if(inputDirection==CONTORLLER_ENUM.LEFT){
             this.targetX-=1
+            this.isMoving=true
         }else if(inputDirection==CONTORLLER_ENUM.TURNLEFT){
             //先改变数据在调用渲染方法
             //当点击左转时，如果角色面向上时，会转为面向左边
@@ -101,6 +111,8 @@ export class PlayerManager extends EntityManager {
              }else if(this.direction===DIRECTION_ENUM.RIGHT){
                 this.direction=DIRECTION_ENUM.TOP
             }
+            //旋转时触发移动结束事件
+            EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
             this.state=ENTITY_STATE_ENUM.TURNLEFT
         }else if(inputDirection==CONTORLLER_ENUM.TURNRIGHT){
             if(this.direction===DIRECTION_ENUM.TOP){
@@ -113,6 +125,7 @@ export class PlayerManager extends EntityManager {
                 this.direction=DIRECTION_ENUM.TOP
             }
             this.state=ENTITY_STATE_ENUM.TURNRIGHT
+            EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         }
     }
     //判断是否撞上墙了

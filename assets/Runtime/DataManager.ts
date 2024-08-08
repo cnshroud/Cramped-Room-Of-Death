@@ -1,6 +1,8 @@
 import Singleton from "../Base/Singleton";
 import { ITile } from "../Levels";
+import { PlayerManager } from "../Scripts/Player/PlayerManager";
 import { TileManager } from "../Scripts/Tile/TileManager";
+import { WoodenSkeletonManager } from "../Scripts/WoodenSkeleton/WoodenSkeletonManager";
 
 export class DataManager extends Singleton{
   //用get的好处不用.GetInstance()，直接.GetInstance就行了
@@ -15,11 +17,16 @@ export class DataManager extends Singleton{
   mapColCount:number
   //关卡信息
   levelIndex:number=1
-
+  //角色信息
+  player:PlayerManager
+  //敌人信息
+  enemies:WoodenSkeletonManager[]
   //重置数据中心(关卡信息不用清空)
   reset(){
     this.mapInfo=[]
     this.tileInfo=[]
+    this.enemies=[]
+    this.player=null
     this.mapRowCount=0
     this.mapColCount=0
 
