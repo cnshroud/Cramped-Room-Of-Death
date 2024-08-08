@@ -62,12 +62,16 @@ export class WoodenSkeletonManager extends EntityManager {
   onAttack(){
     console.log('敌人攻击')
     //当玩家在敌人上下左右时，敌人攻击
-    const {x:playerX,y:playerY}=DataManager.Instance.player
+    const {x:playerX,y:playerY,state:playerstate}=DataManager.Instance.player
 
     if((this.x===playerX&&Math.abs(this.y-playerY)<=1)
       ||(this.y===playerY&&Math.abs(this.x-playerX)<=1)
+      && playerstate!==ENTITY_STATE_ENUM.DEATH        //玩家死亡时，敌人不攻击
+      && playerstate!==ENTITY_STATE_ENUM.AIRDEATH
     ){
       this.state=ENTITY_STATE_ENUM.ATTACK
+      //玩家死亡
+      EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER,ENTITY_STATE_ENUM.DEATH)
     }else{
       this.state=ENTITY_STATE_ENUM.IDLE
     }

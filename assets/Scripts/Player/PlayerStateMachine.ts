@@ -12,6 +12,7 @@ import BlockLeftStateMachine from './BlockLeftStateMachine';
 import BlockRightStateMachine from './BlockRightStateMachine';
 import BlockTurnRightSubStateMachine from './BlockTurnRightSubStateMachine';
 import TurnRightSubStateMachine from './TurnRightSubStateMachine';
+import DeathSubStateMachine from './DeathSubStateMachine';
 const { ccclass, property } = _decorator;
 
 //现在增加状态机的方法就很简单了，
@@ -47,6 +48,9 @@ export class PlayerStateMachine extends StateMachine {
     this.params.set(PARAMS_NAME_ENUM.BLOCKRIGHT,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.BLOCKTURNRIGHT,getInitParamsTrigger())
+
+
+    this.params.set(PARAMS_NAME_ENUM.DEATH,getInitParamsTrigger())
   }
   //初始化状态机
   initstateMachines(){
@@ -60,9 +64,11 @@ export class PlayerStateMachine extends StateMachine {
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKBACK,new BlockBackStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKLEFT,new BlockLeftStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKRIGHT,new BlockRightStateMachine(this))
-
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,new BlockTurnLeftStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,new BlockTurnRightSubStateMachine(this))
+
+
+    this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,new DeathSubStateMachine(this))
   }
 
   //在执行过左转动画之后再把动画变为idle状态
@@ -85,6 +91,8 @@ export class PlayerStateMachine extends StateMachine {
   //当参数改变时执行run方法
   run(){
     switch(this.currentState){
+      case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
+
       case this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKFRONT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKBACK):
@@ -93,10 +101,15 @@ export class PlayerStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT):
 
-      case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.DEATH):
 
-        //改变状态,如果状态机的TURNLEFT状态为true,则切换到TURNLEFT状态,根据方向来决定idle的动画上下左右
-        if(this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value){
+        if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
+          //如果是idle状态为true,则切换到idle状态
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
+        }
+        //方向
+        else if(this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value){
+          //改变状态,如果状态机的TURNLEFT状态为true,则切换到TURNLEFT状态,根据方向来决定idle的动画上下左右
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT)
         }
         else if(this.params.get(PARAMS_NAME_ENUM.TURNRIGHT).value){
@@ -118,11 +131,12 @@ export class PlayerStateMachine extends StateMachine {
         else if(this.params.get(PARAMS_NAME_ENUM.BLOCKRIGHT).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKRIGHT)
         }
+        //死亡
+        else if(this.params.get(PARAMS_NAME_ENUM.DEATH).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.DEATH)
+        }
 
-        else if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
-            //如果是idle状态为true,则切换到idle状态
-            this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
-        }else{
+        else {
           //如果都不是,则保持当前状态，这样才能触发setcurrentState方法中的run方法
           this.currentState=this.currentState
         }

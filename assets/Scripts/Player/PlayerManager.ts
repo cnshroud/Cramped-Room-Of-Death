@@ -47,6 +47,8 @@ export class PlayerManager extends EntityManager {
         // await this.render()
         //把move方法绑定到evenetmanegr
         EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL,this.inputHandle,this)
+        EventManager.Instance.on(EVENT_ENUM.ATTACK_PLAYER,this.onDead,this)
+
     };
 
     update(){
@@ -75,8 +77,22 @@ export class PlayerManager extends EntityManager {
             EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         }
     }
+    //角色死亡
+    onDead(type:ENTITY_STATE_ENUM){
+        this.state=type
+    }
+
+
     //人物移动前处理用户输入的方法
     inputHandle(inputDirection:CONTORLLER_ENUM){
+        //判断是否正在移动
+        if(this.isMoving){
+            return
+        }
+        //判断人物是否死亡,死亡则不能移动
+        if(this.state==ENTITY_STATE_ENUM.DEATH||this.state==ENTITY_STATE_ENUM.AIRDEATH){
+            return
+        }
         //判断是否撞上了
         if(this.willBlock(inputDirection)){
             console.log("撞上了")
