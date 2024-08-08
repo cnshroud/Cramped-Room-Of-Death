@@ -1,10 +1,22 @@
 //有限状态机
 import { _decorator,Animation, } from 'cc';
-import {FSM_PARAMS_TYPE_ENUM, PARAMS_NAME_ENUM } from '../../Enum';
+import {ENTITY_STATE_ENUM, FSM_PARAMS_TYPE_ENUM, PARAMS_NAME_ENUM } from '../../Enum';
 import { getInitParamsNumber, getInitParamsTrigger, StateMachine } from '../../Base/StateMachine';
 import idleSubStateMachine from './idleSubStateMachine';
 import TurnLeftSubStateMachine from './TurnLeftSubStateMachine';
+import BlockFrontStateMachine from './BlockFrontStateMachine';
+import { EntityManager } from '../../Base/EntityManager';
+import BlockTurnLeftStateMachine from './BlockTurnLeftStateMachine';
+import BlockBackStateMachine from './BlockBackStateMachine';
+import BlockLeftStateMachine from './BlockLeftStateMachine';
+import BlockRightStateMachine from './BlockRightStateMachine';
 const { ccclass, property } = _decorator;
+
+//现在增加状态机的方法就很简单了，
+//状态机直接复制TurnLeftSubStateMachine改个名字和资源位置
+//在状态机参数枚举PARAMS_NAME_ENUM和实体枚举ENTITY_STATE_ENUM中增加枚举
+// 在初始化参数和初始化状态机添加set方法即可，run方法中增加该状态机的case和if判断即可
+
 
 @ccclass('PlayerStateMachine')
 export class PlayerStateMachine extends StateMachine {
@@ -25,12 +37,27 @@ export class PlayerStateMachine extends StateMachine {
     this.params.set(PARAMS_NAME_ENUM.IDLE,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.TURNLEFT ,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.DIRECTION ,getInitParamsNumber())
+    //向前撞
+    this.params.set(PARAMS_NAME_ENUM.BLOCKFRONT,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.BLOCKBACK,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.BLOCKLEFT,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.BLOCKRIGHT,getInitParamsTrigger())
+
+    this.params.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,getInitParamsTrigger())
   }
   //初始化状态机
   initstateMachines(){
     //状态机需要根据状态修改参数，
     this.stateMachines.set(PARAMS_NAME_ENUM.IDLE,new idleSubStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.TURNLEFT,new TurnLeftSubStateMachine(this))
+
+    //向前撞
+    this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKFRONT,new BlockFrontStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKBACK,new BlockBackStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKLEFT,new BlockLeftStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKRIGHT,new BlockRightStateMachine(this))
+
+    this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,new BlockTurnLeftStateMachine(this))
 
   }
 
@@ -39,11 +66,13 @@ export class PlayerStateMachine extends StateMachine {
     this.animationComponent.on(Animation.EventType.FINISHED,()=>{
       //拿到动画的名字
       const name = this.animationComponent.defaultClip.name
-      //这是一个白名单
-      const whiteList=['turn']
+      //这是一个白名单，增加一个block
+      const whiteList=['block','turn']
       //如果动画的名字在白名单里面，则把Params状态设置为IDLE
       if(whiteList.some(v=>name.includes(v))){
-        this.setParams(PARAMS_NAME_ENUM.IDLE,true)
+        // this.setParams(PARAMS_NAME_ENUM.IDLE,true)
+        //playerManager已经拿state来作为动画的驱动入口，所以不需要修改this.setParams，直接设置state即可
+        this.node.getComponent(EntityManager).state=ENTITY_STATE_ENUM.IDLE
       }
     })
   }
@@ -53,11 +82,36 @@ export class PlayerStateMachine extends StateMachine {
   run(){
     switch(this.currentState){
       case this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT):
+
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKFRONT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKBACK):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKLEFT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKRIGHT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT):
+
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
         //改变状态,如果状态机的TURNLEFT状态为true,则切换到TURNLEFT状态,根据方向来决定idle的动画上下左右
         if(this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT)
-        }else if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
+        }
+
+        else if(this.params.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT)
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.BLOCKFRONT).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKFRONT)
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.BLOCKBACK).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKBACK)
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.BLOCKLEFT).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKLEFT)
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.BLOCKRIGHT).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKRIGHT)
+        }
+
+        else if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
             //如果是idle状态为true,则切换到idle状态
             this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
         }else{

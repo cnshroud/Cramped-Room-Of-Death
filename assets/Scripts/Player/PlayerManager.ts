@@ -120,6 +120,9 @@ export class PlayerManager extends EntityManager {
                 const weaponNextY = y-2
                 //判断是否走出地图了
                 if(playerNextY<0){
+
+                    //修改状态，把状态机设为blockfront
+                    this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
                 //角色上方的第一个瓦片信息（用于判断人能不能走）
@@ -130,23 +133,28 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    //修改状态，把状态机设为blockfront
+                    this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.BOTTOM){
                 const playerNextY = y-1
                 if(playerNextY<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
                 const playerTile=tileInfo[x][playerNextY]
                 if(playerTile&&playerTile.moveable){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.LEFT){
                 const playerNextY = y-1
                 const weaponNextX = x-1
                 if(playerNextY<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
                 const playerTile=tileInfo[x][playerNextY]
@@ -154,19 +162,21 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.RIGHT){
                 const playerNextY = y-1
                 const weaponNextX = x+1
                 if(playerNextY<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
                 const playerTile=tileInfo[x][playerNextY]
                 const weaponTile=tileInfo[weaponNextX][playerNextY]
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
-
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
             }
@@ -182,12 +192,14 @@ export class PlayerManager extends EntityManager {
             if(direction===DIRECTION_ENUM.TOP){
                 const playerNextY = y+1
                 if(playerNextY<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKBACK
                     return true
                 }
                 const playerTile=tileInfo[x][playerNextY]
                 if(playerTile&&playerTile.moveable){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKBACK
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.BOTTOM){
@@ -195,6 +207,7 @@ export class PlayerManager extends EntityManager {
                 const weaponNextY = y+2
 
                 if(playerNextY<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKBACK
                     return true
                 }
                 const playerTile=tileInfo[x][playerNextY]
@@ -202,6 +215,7 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKBACK
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.LEFT){
@@ -209,6 +223,7 @@ export class PlayerManager extends EntityManager {
                 const weaponNextX = x-1
 
                 if(playerNextY<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKBACK
                     return true
                 }
                 const playerTile=tileInfo[x][playerNextY]
@@ -216,6 +231,7 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKBACK
                     return true
                 }
             }
@@ -224,6 +240,7 @@ export class PlayerManager extends EntityManager {
                 const weaponNextX = x+1
 
                 if(playerNextY<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKBACK
                     return true
                 }
                 const playerTile=tileInfo[x][playerNextY]
@@ -231,6 +248,7 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKBACK
                     return true
                 }
             }
@@ -243,6 +261,7 @@ export class PlayerManager extends EntityManager {
                 const playerNextX = x-1
                 const weaponNextY = y-1
                 if(playerNextX<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
                 const playerTile=tileInfo[playerNextX][y]
@@ -250,12 +269,14 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.BOTTOM){
                 const playerNextX = x-1
                 const weaponNextY = y+1
                 if(playerNextX<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
                 const playerTile=tileInfo[playerNextX][y]
@@ -263,6 +284,7 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.LEFT){
@@ -272,6 +294,7 @@ export class PlayerManager extends EntityManager {
                 const weaponNextX = x-2
                 //判断是否走出地图了
                 if(playerNextX<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
                 //角色上方的第一个瓦片信息（用于判断人能不能走）
@@ -282,6 +305,7 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.RIGHT){
@@ -289,12 +313,14 @@ export class PlayerManager extends EntityManager {
                 const playerNextX = x-1
                 //判断是否走出地图了
                 if(playerNextX<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
                 const playerTile=tileInfo[playerNextX][y]
                 if(playerTile&&playerTile.moveable){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
             }
@@ -306,6 +332,7 @@ export class PlayerManager extends EntityManager {
                 const playerNextX = x+1
                 const weaponNextY = y-1
                 if(playerNextX<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
                 const playerTile=tileInfo[playerNextX][y]
@@ -313,12 +340,14 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.BOTTOM){
                 const playerNextX = x+1
                 const weaponNextY = y+1
                 if(playerNextX<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
                 const playerTile=tileInfo[playerNextX][y]
@@ -326,17 +355,20 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.LEFT){
                 const playerNextX = x+1
                 if(playerNextX<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
                 const playerTile=tileInfo[playerNextX][y]
                 if(playerTile&&playerTile.moveable){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.RIGHT){
@@ -346,6 +378,7 @@ export class PlayerManager extends EntityManager {
                 const weaponNextX = x+2
                 //判断是否走出地图了
                 if(playerNextX<0){
+                    this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
                 //角色上方的第一个瓦片信息（用于判断人能不能走）
@@ -356,6 +389,7 @@ export class PlayerManager extends EntityManager {
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
+                    this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
             }
@@ -390,6 +424,8 @@ export class PlayerManager extends EntityManager {
             ){
 
             }else{
+
+                this.state=ENTITY_STATE_ENUM.BLOCKTURNLEFT
                 return true
             }
         }
