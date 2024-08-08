@@ -1,7 +1,9 @@
 import { _decorator ,Animation} from "cc";
 import { getInitParamsNumber, getInitParamsTrigger, StateMachine } from "../../Base/StateMachine";
-import { PARAMS_NAME_ENUM } from "../../Enum";
+import { ENTITY_STATE_ENUM, PARAMS_NAME_ENUM } from "../../Enum";
 import idleSubStateMachine from "./idleSubStateMachine";
+import AttackSubStateMachine from "./AttackSubStateMachine";
+import { EntityManager } from "../../Base/EntityManager";
 
 const { ccclass, property } = _decorator;
 
@@ -29,33 +31,43 @@ export class WoodenSkeletonStateMachine extends StateMachine {
   initParams(){
     this.params.set(PARAMS_NAME_ENUM.IDLE,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.DIRECTION ,getInitParamsNumber())
+    this.params.set(PARAMS_NAME_ENUM.ATTACK ,getInitParamsTrigger())
   }
   //初始化状态机
   initstateMachine(){
     //状态机需要根据状态修改参数，
     this.stateMachines.set(PARAMS_NAME_ENUM.IDLE,new idleSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.ATTACK,new AttackSubStateMachine(this))
+
   }
 
-  //在执行过左转动画之后再把动画变为idle状态
+  //在执行过其他动画之后再把动画变为idle状态
   initAnimationEvent(){
     this.animationComponent.on(Animation.EventType.FINISHED,()=>{
-      // //拿到动画的名字
-      // const name = this.animationComponent.defaultClip.name
-      // const whiteList=['block','turn']
-      // if(whiteList.some(v=>name.includes(v))){
-      //   this.node.getComponent(EntityManager).state=ENTITY_STATE_ENUM.IDLE
-      // }
+      //拿到动画的名字
+      const name = this.animationComponent.defaultClip.name
+      const whiteList=['attack']
+      if(whiteList.some(v=>name.includes(v))){
+        this.node.getComponent(EntityManager).state=ENTITY_STATE_ENUM.IDLE
+      }
     })
   }
 
   //当参数改变时执行run方法
   run(){
     switch(this.currentState){
+
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK):
         if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
             //如果是idle状态为true,则切换到idle状态
             this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
-        }else{
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.ATTACK).value){
+          console.log('attack')
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK)
+        }
+        else{
           //如果都不是,则保持当前状态，这样才能触发setcurrentState方法中的run方法
           this.currentState=this.currentState
         }

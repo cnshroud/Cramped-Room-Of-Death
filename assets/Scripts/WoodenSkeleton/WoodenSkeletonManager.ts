@@ -14,17 +14,21 @@ export class WoodenSkeletonManager extends EntityManager {
     this.fsm =this.addComponent(WoodenSkeletonStateMachine)
       await this.fsm.init()
       super.init({
-        x:7,
-        y:6,
+        x:2,
+        y:4,
         type:ENTITY_TYPE_ENUM.PLAYER,
         direction:DIRECTION_ENUM.TOP,
         state:ENTITY_STATE_ENUM.IDLE,
        })
-
-    EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.onChangeDirection,this)
     //玩家出生时也调用这个方法
     EventManager.Instance.on(EVENT_ENUM.PLAYER_BORN,this.onChangeDirection,this)
+    EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.onChangeDirection,this)
+    EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.onAttack,this)
 
+
+
+      //玩家先生成时也触发这个方法
+    this.onChangeDirection(true)
 
   };
   //敌人根据角色位置转向方法
@@ -43,7 +47,7 @@ export class WoodenSkeletonManager extends EntityManager {
       return
     }
     //判断玩家在敌人的第几象限
-    if(playerX=>this.x&&playerY<=this.y){
+    if(playerX>=this.x&&playerY<=this.y){
       //如果y的距离比x的大则敌人向上看，否则向右看
         this.direction=disY>disX?DIRECTION_ENUM.TOP:this.direction=DIRECTION_ENUM.RIGHT
     } else if (playerX<=this.x&&playerY<=this.y){
@@ -55,5 +59,18 @@ export class WoodenSkeletonManager extends EntityManager {
     }
   }
 
+  onAttack(){
+    console.log('敌人攻击')
+    //当玩家在敌人上下左右时，敌人攻击
+    const {x:playerX,y:playerY}=DataManager.Instance.player
+
+    if((this.x===playerX&&Math.abs(this.y-playerY)<=1)
+      ||(this.y===playerY&&Math.abs(this.x-playerX)<=1)
+    ){
+      this.state=ENTITY_STATE_ENUM.ATTACK
+    }else{
+      this.state=ENTITY_STATE_ENUM.IDLE
+    }
+  }
 
 }
