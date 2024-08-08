@@ -25,7 +25,9 @@ export const TILE_HEIGHT=55
 export class TileManager extends Component {
   //墙壁类型
   type:TILE_TYPE_ENUM
+  //可以移动（人能走）
   moveable:boolean
+  //可以转向（枪能走）
   turnable:boolean
     //瓦片地图动态生成
   init(type:TILE_TYPE_ENUM,spriteFrame:SpriteFrame,i:number ,j:number){

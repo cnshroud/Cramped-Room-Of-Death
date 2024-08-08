@@ -27,13 +27,14 @@ export class PlayerManager extends EntityManager {
 
         //父类初始化
         super.init({
-            x:0,
-            y:0,
+            x:2,
+            y:8,
             type:ENTITY_TYPE_ENUM.PLAYER,
             direction:DIRECTION_ENUM.TOP,
             state:ENTITY_STATE_ENUM.IDLE,
         })
-
+        this.targetX=this.x
+        this.targetY=this.y
         //设置初始方向
         this.direction=DIRECTION_ENUM.TOP
         //数据ui分离后只需要修改状态即可setParams
@@ -42,7 +43,7 @@ export class PlayerManager extends EntityManager {
         //使用状态机就不需要渲染了
         // await this.render()
         //把move方法绑定到evenetmanegr
-        EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL,this.move,this)
+        EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL,this.inputHandle,this)
     };
 
     update(){
@@ -68,10 +69,18 @@ export class PlayerManager extends EntityManager {
             this.y=this.targetY
         }
     }
+    //人物移动前处理用户输入的方法
+    inputHandle(inputDirection:CONTORLLER_ENUM){
+        //判断是否撞上了
+        if(this.willBlock(inputDirection)){
+            console.log("撞上了")
+            return
+        }
+        this.move(inputDirection)
 
+    }
     //人物移动
     move(inputDirection:CONTORLLER_ENUM){
-        console.log("地图信息",DataManager.Instance.tileInfo)
         if(inputDirection==CONTORLLER_ENUM.TOP){
             this.targetY-=1
         }else if(inputDirection==CONTORLLER_ENUM.BOTTOM){
@@ -95,6 +104,300 @@ export class PlayerManager extends EntityManager {
             this.state=ENTITY_STATE_ENUM.TURNLEFT
         }
     }
+    //判断是否撞上墙了
+    willBlock(inputDirection:CONTORLLER_ENUM){
+        //把自己人物的xy和方向解构出来
+        const { targetX:x,targetY:y,direction}=this
+        //把瓦片信息解构出来
+        const {tileInfo} =DataManager.Instance
+        //输入方向是上
+        if(inputDirection===CONTORLLER_ENUM.TOP){
+            //面向方向是上
+            if(direction===DIRECTION_ENUM.TOP){
+                //角色上方的第一个瓦片坐标
+                const playerNextY = y-1
+                //枪上方的第一个瓦片坐标
+                const weaponNextY = y-2
+                //判断是否走出地图了
+                if(playerNextY<0){
+                    return true
+                }
+                //角色上方的第一个瓦片信息（用于判断人能不能走）
+                const playerTile=tileInfo[x][playerNextY]
+                //角色上方的第二个瓦片信息（用于判断枪能不能走）
+                const weaponTile=tileInfo[x][weaponNextY]
+                //当人能走（moveable为true），枪也能走的情况下(瓦片不存在或者turnable为true)
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.BOTTOM){
+                const playerNextY = y-1
+                if(playerNextY<0){
+                    return true
+                }
+                const playerTile=tileInfo[x][playerNextY]
+                if(playerTile&&playerTile.moveable){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.LEFT){
+                const playerNextY = y-1
+                const weaponNextX = x-1
+                if(playerNextY<0){
+                    return true
+                }
+                const playerTile=tileInfo[x][playerNextY]
+                const weaponTile=tileInfo[weaponNextX][playerNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.RIGHT){
+                const playerNextY = y-1
+                const weaponNextX = x+1
+                if(playerNextY<0){
+                    return true
+                }
+                const playerTile=tileInfo[x][playerNextY]
+                const weaponTile=tileInfo[weaponNextX][playerNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }
+
+
+
+
+
+
+
+        }else if(inputDirection===CONTORLLER_ENUM.BOTTOM){
+            //下-----------------------------------------------------------------------------------------------------------------------
+            if(direction===DIRECTION_ENUM.TOP){
+                const playerNextY = y+1
+                if(playerNextY<0){
+                    return true
+                }
+                const playerTile=tileInfo[x][playerNextY]
+                if(playerTile&&playerTile.moveable){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.BOTTOM){
+                const playerNextY = y+1
+                const weaponNextY = y+2
+
+                if(playerNextY<0){
+                    return true
+                }
+                const playerTile=tileInfo[x][playerNextY]
+                const weaponTile=tileInfo[x][weaponNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.LEFT){
+                const playerNextY = y+1
+                const weaponNextX = x-1
+
+                if(playerNextY<0){
+                    return true
+                }
+                const playerTile=tileInfo[x][playerNextY]
+                const weaponTile=tileInfo[weaponNextX][playerNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }
+            else if(direction===DIRECTION_ENUM.RIGHT){
+                const playerNextY = y+1
+                const weaponNextX = x+1
+
+                if(playerNextY<0){
+                    return true
+                }
+                const playerTile=tileInfo[x][playerNextY]
+                const weaponTile=tileInfo[weaponNextX][playerNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }
+
+
+
+        }else if(inputDirection===CONTORLLER_ENUM.LEFT){
+            //左-----------------------------------------------------------------------------------------------------------------
+            if(direction===DIRECTION_ENUM.TOP){
+                const playerNextX = x-1
+                const weaponNextY = y-1
+                if(playerNextX<0){
+                    return true
+                }
+                const playerTile=tileInfo[playerNextX][y]
+                const weaponTile=tileInfo[playerNextX][weaponNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.BOTTOM){
+                const playerNextX = x-1
+                const weaponNextY = y+1
+                if(playerNextX<0){
+                    return true
+                }
+                const playerTile=tileInfo[playerNextX][y]
+                const weaponTile=tileInfo[playerNextX][weaponNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.LEFT){
+                //角色上方的第一个瓦片坐标
+                const playerNextX = x-1
+                //枪上方的第一个瓦片坐标
+                const weaponNextX = x-2
+                //判断是否走出地图了
+                if(playerNextX<0){
+                    return true
+                }
+                //角色上方的第一个瓦片信息（用于判断人能不能走）
+                const playerTile=tileInfo[playerNextX][y]
+                //角色上方的第二个瓦片信息（用于判断枪能不能走）
+                const weaponTile=tileInfo[weaponNextX][y]
+                //当人能走（moveable为true），枪也能走的情况下(瓦片不存在或者turnable为true)
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.RIGHT){
+                //角色上方的第一个瓦片坐标
+                const playerNextX = x-1
+                //判断是否走出地图了
+                if(playerNextX<0){
+                    return true
+                }
+                const playerTile=tileInfo[playerNextX][y]
+                if(playerTile&&playerTile.moveable){
+
+                }else{
+                    return true
+                }
+            }
+
+
+        }else if(inputDirection===CONTORLLER_ENUM.RIGHT){
+            //右---------------------------------------------------------------------------------------------------------------
+            if(direction===DIRECTION_ENUM.TOP){
+                const playerNextX = x+1
+                const weaponNextY = y-1
+                if(playerNextX<0){
+                    return true
+                }
+                const playerTile=tileInfo[playerNextX][y]
+                const weaponTile=tileInfo[playerNextX][weaponNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.BOTTOM){
+                const playerNextX = x+1
+                const weaponNextY = y+1
+                if(playerNextX<0){
+                    return true
+                }
+                const playerTile=tileInfo[playerNextX][y]
+                const weaponTile=tileInfo[playerNextX][weaponNextY]
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.LEFT){
+                const playerNextX = x+1
+                if(playerNextX<0){
+                    return true
+                }
+                const playerTile=tileInfo[playerNextX][y]
+                if(playerTile&&playerTile.moveable){
+
+                }else{
+                    return true
+                }
+            }else if(direction===DIRECTION_ENUM.RIGHT){
+                //角色右方的第一个瓦片坐标
+                const playerNextX = x+1
+                //枪上方的第一个瓦片坐标
+                const weaponNextX = x+2
+                //判断是否走出地图了
+                if(playerNextX<0){
+                    return true
+                }
+                //角色上方的第一个瓦片信息（用于判断人能不能走）
+                const playerTile=tileInfo[playerNextX][y]
+                //角色上方的第二个瓦片信息（用于判断枪能不能走）
+                const weaponTile=tileInfo[weaponNextX][y]
+                //当人能走（moveable为true），枪也能走的情况下(瓦片不存在或者turnable为true)
+                if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
+
+                }else{
+                    return true
+                }
+            }
+
+
+        }else if(inputDirection===CONTORLLER_ENUM.TURNLEFT){
+            //左转按钮判断--------------------------------------------------------------------------------------------------------------------------
+            //左转是否撞墙的判定需要三个瓦片
+            let nextX
+            let nextY
+            //如果人物方向向上，则需要检测上、左、左上三个瓦片,其他方向同理
+            if(direction===DIRECTION_ENUM.TOP){
+                nextX=x-1
+                nextY=y-1
+            }else if(direction===DIRECTION_ENUM.BOTTOM){
+                nextX=x+1
+                nextY=y+1
+            }
+            else if(direction===DIRECTION_ENUM.LEFT){
+                nextX=x-1
+                nextY=y+1
+            }
+            else if(direction===DIRECTION_ENUM.RIGHT){
+                nextX=x+1
+                nextY=y-1
+            }
+            //判断人物面对方向的上、左、左上三个方位的瓦片是否可走
+            if(
+                (!tileInfo[x][nextY]||tileInfo[x][nextY].turnable) &&
+                (!tileInfo[nextX][y]||tileInfo[nextX][y].turnable) &&
+                (!tileInfo[nextX][nextY]||tileInfo[nextX][nextY].turnable)
+            ){
+
+            }else{
+                return true
+            }
+        }
+
+
+
+        //没撞上
+        return false
+    }
 
 }
