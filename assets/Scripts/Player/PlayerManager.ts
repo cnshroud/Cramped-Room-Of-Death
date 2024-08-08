@@ -81,7 +81,6 @@ export class PlayerManager extends EntityManager {
     }
     //人物移动
     move(inputDirection:CONTORLLER_ENUM){
-        console.log("移动",inputDirection)
         if(inputDirection==CONTORLLER_ENUM.TOP){
             this.targetY-=1
         }else if(inputDirection==CONTORLLER_ENUM.BOTTOM){
@@ -93,8 +92,6 @@ export class PlayerManager extends EntityManager {
         }else if(inputDirection==CONTORLLER_ENUM.TURNLEFT){
             //先改变数据在调用渲染方法
             //当点击左转时，如果角色面向上时，会转为面向左边
-
-            console.log("移动",inputDirection)
             if(this.direction===DIRECTION_ENUM.TOP){
                 this.direction=DIRECTION_ENUM.LEFT
             }else if(this.direction===DIRECTION_ENUM.LEFT){
@@ -106,7 +103,6 @@ export class PlayerManager extends EntityManager {
             }
             this.state=ENTITY_STATE_ENUM.TURNLEFT
         }else if(inputDirection==CONTORLLER_ENUM.TURNRIGHT){
-            console.log("移动",inputDirection)
             if(this.direction===DIRECTION_ENUM.TOP){
                 this.direction=DIRECTION_ENUM.RIGHT
             }else if(this.direction===DIRECTION_ENUM.RIGHT){

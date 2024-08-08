@@ -1,4 +1,4 @@
-import { Layers, UITransform,Node } from "cc"
+import { Layers, UITransform,Node, SpriteFrame } from "cc"
 //工具类，给node设置ui等
 
 //箭头函数的优点
@@ -23,3 +23,15 @@ export const createUINode=(name:string='')=>{
 export const randomByRange=(start:number,end:number)=>
   Math.floor(start +(end-start)*Math.random())
 
+
+//----------------把SpriteFrame资源名称括号里的数字转成数字类型给他排序（通过正则表达式）--------------------------------------
+//正则表达式，用于匹配括号中的数字
+const reg = /\((\d+)\)/
+
+//从字符串中获取数字
+const getNumberWithinString=(str:string)=>  parseInt(str.match(reg)?.[1]  ||"0")
+
+//state请求资源时的顺序可能是错的 资源顺序1,2,3,4，网络请求回来的资源可能是2,3,4,1会导致顺序错误，所以对SpriteFrame数组进行排序
+
+export const sortSpriteFrame=(SpriteFrames:SpriteFrame[])=>SpriteFrames.sort((a,b)=>getNumberWithinString(a.name)-getNumberWithinString(b.name))
+//-----------------------------------------------------------------------------------------------------------------------

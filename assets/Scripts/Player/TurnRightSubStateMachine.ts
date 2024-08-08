@@ -8,8 +8,6 @@ const BASE_URL="texture/player/turnright"
 export default class TurnRightSubStateMachine extends DirectionSubStateMachine {
     constructor(fsm: StateMachine) {
       super(fsm);
-      console.log("turnright")
-      console.log(BASE_URL)
       this.stateMachines.set(DIRECTION_ENUM.TOP,new State(fsm,`${BASE_URL}/top`))
       this.stateMachines.set(DIRECTION_ENUM.LEFT,new State(fsm,`${BASE_URL}/left`))
       this.stateMachines.set(DIRECTION_ENUM.BOTTOM,new State(fsm,`${BASE_URL}/bottom`))

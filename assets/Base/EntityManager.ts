@@ -2,9 +2,9 @@
 import { _decorator, animation, Animation, AnimationClip, Component, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
 
 import { IEntity } from '../Levels';
-import { PlayerStateMachine } from '../Scripts/Player/PlayerStateMachine';
 import { DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, PARAMS_NAME_ENUM } from '../Enum';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Scripts/Tile/TileManager';
+import { StateMachine } from './StateMachine';
 const { ccclass, property } = _decorator;
 //实体管理器基类
 @ccclass('EntityManager')
@@ -14,7 +14,7 @@ export class EntityManager extends Component {
     x:number=0
     y:number=0
     //状态机变量
-    fsm:PlayerStateMachine
+    fsm:StateMachine
     //方位变量
     private _direction:DIRECTION_ENUM
     //实体状态
@@ -36,7 +36,6 @@ export class EntityManager extends Component {
         return this._state
     }
     set state(newState:ENTITY_STATE_ENUM){
-        console.log("修改状态",newState)
         this._state=newState
         //数据ui分离思想，要先改变状态再渲染改变ui
         this.fsm.setParams(this._state,true)

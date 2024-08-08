@@ -8,6 +8,7 @@ import { DataManager } from '../../Runtime/DataManager';
 import { EventManager } from '../../Runtime/EventManager';
 import { EVENT_ENUM } from '../../Enum';
 import { PlayerManager } from '../Player/PlayerManager';
+import { WoodenSkeletonManager } from '../WoodenSkeleton/WoodenSkeletonManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')
@@ -44,6 +45,7 @@ export class BattleManager extends Component {
             DataManager.Instance.mapColCount=this.level.mapInfo[0].length ||0
             this.generateTileMap()
             this.generatePlayer()
+            this.generateEnemies()
         }
     }
     //下一关
@@ -81,6 +83,13 @@ export class BattleManager extends Component {
         const playerManager=player.addComponent(PlayerManager)
         playerManager.init()
     }
+    //加载敌人
+    generateEnemies(){
+        const enemy= createUINode()
+        enemy.setParent(this.stage)
+        const woodenSkeletonManager=enemy.addComponent(WoodenSkeletonManager)
+        woodenSkeletonManager.init()
+    }
 
     //适配屏幕的方法
     adaptPos(){
@@ -91,4 +100,6 @@ export class BattleManager extends Component {
         //获取地图大小
         this.stage.setPosition(-disx,disy)
     }
+
+
 }

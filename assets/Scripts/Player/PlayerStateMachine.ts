@@ -94,13 +94,13 @@ export class PlayerStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT):
 
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
+
         //改变状态,如果状态机的TURNLEFT状态为true,则切换到TURNLEFT状态,根据方向来决定idle的动画上下左右
         if(this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT)
         }
         else if(this.params.get(PARAMS_NAME_ENUM.TURNRIGHT).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.TURNRIGHT)
-          console.log('turnright')
         }
 
         else if(this.params.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT).value){
