@@ -81,6 +81,7 @@ export class PlayerManager extends EntityManager {
     }
     //人物移动
     move(inputDirection:CONTORLLER_ENUM){
+        console.log("移动",inputDirection)
         if(inputDirection==CONTORLLER_ENUM.TOP){
             this.targetY-=1
         }else if(inputDirection==CONTORLLER_ENUM.BOTTOM){
@@ -92,6 +93,8 @@ export class PlayerManager extends EntityManager {
         }else if(inputDirection==CONTORLLER_ENUM.TURNLEFT){
             //先改变数据在调用渲染方法
             //当点击左转时，如果角色面向上时，会转为面向左边
+
+            console.log("移动",inputDirection)
             if(this.direction===DIRECTION_ENUM.TOP){
                 this.direction=DIRECTION_ENUM.LEFT
             }else if(this.direction===DIRECTION_ENUM.LEFT){
@@ -102,6 +105,18 @@ export class PlayerManager extends EntityManager {
                 this.direction=DIRECTION_ENUM.TOP
             }
             this.state=ENTITY_STATE_ENUM.TURNLEFT
+        }else if(inputDirection==CONTORLLER_ENUM.TURNRIGHT){
+            console.log("移动",inputDirection)
+            if(this.direction===DIRECTION_ENUM.TOP){
+                this.direction=DIRECTION_ENUM.RIGHT
+            }else if(this.direction===DIRECTION_ENUM.RIGHT){
+                this.direction=DIRECTION_ENUM.BOTTOM
+            }else if(this.direction===DIRECTION_ENUM.BOTTOM){
+                this.direction=DIRECTION_ENUM.LEFT
+             }else if(this.direction===DIRECTION_ENUM.LEFT){
+                this.direction=DIRECTION_ENUM.TOP
+            }
+            this.state=ENTITY_STATE_ENUM.TURNRIGHT
         }
     }
     //判断是否撞上墙了
@@ -424,8 +439,39 @@ export class PlayerManager extends EntityManager {
             ){
 
             }else{
-
                 this.state=ENTITY_STATE_ENUM.BLOCKTURNLEFT
+                return true
+            }
+        }else if(inputDirection===CONTORLLER_ENUM.TURNRIGHT){
+            //左转按钮判断--------------------------------------------------------------------------------------------------------------------------
+            //左转是否撞墙的判定需要三个瓦片
+            let nextX
+            let nextY
+            //如果人物方向向上，则需要检测上、左、左上三个瓦片,其他方向同理
+            if(direction===DIRECTION_ENUM.TOP){
+                nextX=x+1
+                nextY=y-1
+            }else if(direction===DIRECTION_ENUM.BOTTOM){
+                nextX=x-1
+                nextY=y+1
+            }
+            else if(direction===DIRECTION_ENUM.LEFT){
+                nextX=x-1
+                nextY=y-1
+            }
+            else if(direction===DIRECTION_ENUM.RIGHT){
+                nextX=x+1
+                nextY=y+1
+            }
+            //判断人物面对方向的上、左、左上三个方位的瓦片是否可走
+            if(
+                (!tileInfo[x][nextY]||tileInfo[x][nextY].turnable) &&
+                (!tileInfo[nextX][y]||tileInfo[nextX][y].turnable) &&
+                (!tileInfo[nextX][nextY]||tileInfo[nextX][nextY].turnable)
+            ){
+
+            }else{
+                this.state=ENTITY_STATE_ENUM.BLOCKTURNRIGHT
                 return true
             }
         }

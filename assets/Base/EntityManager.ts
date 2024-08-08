@@ -36,6 +36,7 @@ export class EntityManager extends Component {
         return this._state
     }
     set state(newState:ENTITY_STATE_ENUM){
+        console.log("修改状态",newState)
         this._state=newState
         //数据ui分离思想，要先改变状态再渲染改变ui
         this.fsm.setParams(this._state,true)

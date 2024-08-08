@@ -10,6 +10,8 @@ import BlockTurnLeftStateMachine from './BlockTurnLeftStateMachine';
 import BlockBackStateMachine from './BlockBackStateMachine';
 import BlockLeftStateMachine from './BlockLeftStateMachine';
 import BlockRightStateMachine from './BlockRightStateMachine';
+import BlockTurnRightSubStateMachine from './BlockTurnRightSubStateMachine';
+import TurnRightSubStateMachine from './TurnRightSubStateMachine';
 const { ccclass, property } = _decorator;
 
 //现在增加状态机的方法就很简单了，
@@ -36,20 +38,22 @@ export class PlayerStateMachine extends StateMachine {
   initParams(){
     this.params.set(PARAMS_NAME_ENUM.IDLE,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.TURNLEFT ,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.TURNRIGHT ,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.DIRECTION ,getInitParamsNumber())
     //向前撞
     this.params.set(PARAMS_NAME_ENUM.BLOCKFRONT,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.BLOCKBACK,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.BLOCKLEFT,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.BLOCKRIGHT,getInitParamsTrigger())
-
     this.params.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.BLOCKTURNRIGHT,getInitParamsTrigger())
   }
   //初始化状态机
   initstateMachines(){
     //状态机需要根据状态修改参数，
     this.stateMachines.set(PARAMS_NAME_ENUM.IDLE,new idleSubStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.TURNLEFT,new TurnLeftSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.TURNRIGHT,new TurnRightSubStateMachine(this))
 
     //向前撞
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKFRONT,new BlockFrontStateMachine(this))
@@ -58,7 +62,7 @@ export class PlayerStateMachine extends StateMachine {
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKRIGHT,new BlockRightStateMachine(this))
 
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,new BlockTurnLeftStateMachine(this))
-
+    this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,new BlockTurnRightSubStateMachine(this))
   }
 
   //在执行过左转动画之后再把动画变为idle状态
@@ -82,17 +86,21 @@ export class PlayerStateMachine extends StateMachine {
   run(){
     switch(this.currentState){
       case this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT):
-
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKFRONT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKBACK):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKLEFT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKRIGHT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT):
 
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
         //改变状态,如果状态机的TURNLEFT状态为true,则切换到TURNLEFT状态,根据方向来决定idle的动画上下左右
         if(this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT)
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.TURNRIGHT).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.TURNRIGHT)
+          console.log('turnright')
         }
 
         else if(this.params.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT).value){
