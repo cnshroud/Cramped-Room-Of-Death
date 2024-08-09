@@ -60,7 +60,6 @@ export class WoodenSkeletonManager extends EntityManager {
   }
 
   onAttack(){
-    console.log('敌人攻击')
     //当玩家在敌人上下左右时，敌人攻击
     const {x:playerX,y:playerY,state:playerstate}=DataManager.Instance.player
 

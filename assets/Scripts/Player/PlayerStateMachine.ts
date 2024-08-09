@@ -13,6 +13,7 @@ import BlockRightStateMachine from './BlockRightStateMachine';
 import BlockTurnRightSubStateMachine from './BlockTurnRightSubStateMachine';
 import TurnRightSubStateMachine from './TurnRightSubStateMachine';
 import DeathSubStateMachine from './DeathSubStateMachine';
+import AttackSubStateMachine from './AttackSubStateMachine';
 const { ccclass, property } = _decorator;
 
 //现在增加状态机的方法就很简单了，
@@ -51,6 +52,7 @@ export class PlayerStateMachine extends StateMachine {
 
 
     this.params.set(PARAMS_NAME_ENUM.DEATH,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.ATTACK,getInitParamsTrigger())
   }
   //初始化状态机
   initstateMachines(){
@@ -69,6 +71,7 @@ export class PlayerStateMachine extends StateMachine {
 
 
     this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,new DeathSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.ATTACK,new AttackSubStateMachine(this))
   }
 
   //在执行过左转动画之后再把动画变为idle状态
@@ -77,7 +80,7 @@ export class PlayerStateMachine extends StateMachine {
       //拿到动画的名字
       const name = this.animationComponent.defaultClip.name
       //这是一个白名单，增加一个block
-      const whiteList=['block','turn']
+      const whiteList=['block','turn','attack']
       //如果动画的名字在白名单里面，则把Params状态设置为IDLE
       if(whiteList.some(v=>name.includes(v))){
         // this.setParams(PARAMS_NAME_ENUM.IDLE,true)
@@ -102,7 +105,7 @@ export class PlayerStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT):
 
       case this.stateMachines.get(PARAMS_NAME_ENUM.DEATH):
-
+      case this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK):
         if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
           //如果是idle状态为true,则切换到idle状态
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
@@ -134,6 +137,9 @@ export class PlayerStateMachine extends StateMachine {
         //死亡
         else if(this.params.get(PARAMS_NAME_ENUM.DEATH).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.DEATH)
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.ATTACK).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK)
         }
 
         else {

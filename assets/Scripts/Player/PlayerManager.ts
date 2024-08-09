@@ -89,8 +89,13 @@ export class PlayerManager extends EntityManager {
         if(this.isMoving){
             return
         }
-        //判断人物是否死亡,死亡则不能移动
-        if(this.state==ENTITY_STATE_ENUM.DEATH||this.state==ENTITY_STATE_ENUM.AIRDEATH){
+        //判断人物是否死亡或攻击,这个状态下不能移动
+        if(this.state==ENTITY_STATE_ENUM.DEATH||this.state==ENTITY_STATE_ENUM.AIRDEATH || this.state==ENTITY_STATE_ENUM.ATTACK){
+            return
+        }
+        //判断是否将要攻击
+        if(this.willAttack(inputDirection)){
+            console.log("将要攻击")
             return
         }
         //判断是否撞上了
@@ -144,6 +149,52 @@ export class PlayerManager extends EntityManager {
             EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         }
     }
+    //攻击判断
+    willAttack(type:CONTORLLER_ENUM){
+        //拿到所有敌人位置，看玩家面向的方向继续往前走会不会碰到敌人
+        const enemies = DataManager.Instance.enemies
+        for (let i=0;i<enemies.length;i++){
+            const {x:enemyX,y:enemyY}=enemies[i]
+            if(
+                type===CONTORLLER_ENUM.TOP &&
+                this.direction===DIRECTION_ENUM.TOP &&
+                enemyX==this.x &&
+                enemyY==this.targetY-2
+            ){
+                this.state=ENTITY_STATE_ENUM.ATTACK
+                return true
+            }else  if(
+                type===CONTORLLER_ENUM.BOTTOM &&
+                this.direction===DIRECTION_ENUM.BOTTOM &&
+                enemyX==this.x &&
+                enemyY==this.targetY+2
+            ){
+                this.state=ENTITY_STATE_ENUM.ATTACK
+                return true
+            }
+            else  if(
+                type===CONTORLLER_ENUM.LEFT &&
+                this.direction===DIRECTION_ENUM.LEFT &&
+                enemyX==this.x-2 &&
+                enemyY==this.targetY
+            ){
+                this.state=ENTITY_STATE_ENUM.ATTACK
+                return true
+            }
+            else  if(
+                type===CONTORLLER_ENUM.RIGHT &&
+                this.direction===DIRECTION_ENUM.RIGHT &&
+                enemyX==this.x+2 &&
+                enemyY==this.targetY
+            ){
+                this.state=ENTITY_STATE_ENUM.ATTACK
+                return true
+            }
+        }
+
+        return false
+    }
+
     //判断是否撞上墙了
     willBlock(inputDirection:CONTORLLER_ENUM){
         //把自己人物的xy和方向解构出来

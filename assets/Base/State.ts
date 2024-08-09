@@ -57,6 +57,10 @@ export default class State {
         this.animationClip.wrapMode=this.wrapMode
   }
   run(){
+    //如果当前动画跟将要播放的动画是一致的就不播放了，不然角色每走一步，敌人就要重新触发idle动画
+    if(this.fsm.animationComponent?.defaultClip?.name===this.animationClip.name){//可链式操作没有就返回undefalut
+      return
+    }
         //设置defalutClip
         this.fsm.animationComponent.defaultClip = this.animationClip;
         //播放组件
