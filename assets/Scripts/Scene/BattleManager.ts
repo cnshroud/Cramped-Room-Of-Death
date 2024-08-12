@@ -104,7 +104,7 @@ export class BattleManager extends Component {
         const woodenSkeletonManager=enemy1.addComponent(WoodenSkeletonManager)
         await woodenSkeletonManager.init({
             x:2,
-            y:4,
+            y:5,
             type:ENTITY_TYPE_ENUM.SKELETON_WOODEN,
             direction:DIRECTION_ENUM.TOP,
             state:ENTITY_STATE_ENUM.IDLE,
@@ -130,7 +130,13 @@ export class BattleManager extends Component {
         const door= createUINode()
         door.setParent(this.stage)
         const doorManager=door.addComponent(DoorManager)
-        await doorManager.init()
+        await doorManager.init({
+            x:7,
+            y:9,
+            type:ENTITY_TYPE_ENUM.DOOR,
+            direction:DIRECTION_ENUM.TOP,
+            state:ENTITY_STATE_ENUM.IDLE,
+           })
         DataManager.Instance.door=doorManager
         console.log('门加载完成')
     }
