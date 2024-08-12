@@ -1,3 +1,4 @@
+import { enemyManager } from "../Base/enemyManager";
 import Singleton from "../Base/Singleton";
 import { ITile } from "../Levels";
 import { DoorManager } from "../Scripts/Door/DoorManager";
@@ -21,7 +22,7 @@ export class DataManager extends Singleton{
   //角色信息
   player:PlayerManager
   //敌人信息
-  enemies:WoodenSkeletonManager[]
+  enemies:enemyManager[]
   //门信息
   door:DoorManager
   //重置数据中心(关卡信息不用清空)

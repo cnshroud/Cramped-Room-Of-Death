@@ -5,6 +5,7 @@ import { EventManager } from '../../Runtime/EventManager';
 import { PlayerStateMachine } from './PlayerStateMachine';
 import { EntityManager } from '../../Base/EntityManager';
 import { DataManager } from '../../Runtime/DataManager';
+import { IEntity } from '../../Levels';
 const { ccclass, property } = _decorator;
 
 //玩家管理器，管理玩家动画
@@ -17,7 +18,7 @@ export class PlayerManager extends EntityManager {
     //判断是否移动
     isMoving=false
 
-    async init(){
+    async init(params:IEntity){
 
         //加入状态机脚本
         this.fsm =this.addComponent(PlayerStateMachine)
@@ -29,13 +30,7 @@ export class PlayerManager extends EntityManager {
         // console.log("修改后的状态机",this.fsm.getParams(PARAMS_NAME_ENUM.IDLE))
 
         //父类初始化
-        super.init({
-            x:2,
-            y:8,
-            type:ENTITY_TYPE_ENUM.PLAYER,
-            direction:DIRECTION_ENUM.TOP,
-            state:ENTITY_STATE_ENUM.IDLE,
-        })
+        super.init(params)
         this.targetX=this.x
         this.targetY=this.y
         //设置初始方向
