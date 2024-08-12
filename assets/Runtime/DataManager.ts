@@ -1,5 +1,6 @@
 import Singleton from "../Base/Singleton";
 import { ITile } from "../Levels";
+import { DoorManager } from "../Scripts/Door/DoorManager";
 import { PlayerManager } from "../Scripts/Player/PlayerManager";
 import { TileManager } from "../Scripts/Tile/TileManager";
 import { WoodenSkeletonManager } from "../Scripts/WoodenSkeleton/WoodenSkeletonManager";
@@ -21,6 +22,8 @@ export class DataManager extends Singleton{
   player:PlayerManager
   //敌人信息
   enemies:WoodenSkeletonManager[]
+  //门信息
+  door:DoorManager
   //重置数据中心(关卡信息不用清空)
   reset(){
     this.mapInfo=[]
@@ -29,6 +32,6 @@ export class DataManager extends Singleton{
     this.player=null
     this.mapRowCount=0
     this.mapColCount=0
-
+    this.door=null
   }
 }

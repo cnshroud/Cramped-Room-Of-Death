@@ -9,6 +9,7 @@ import { EventManager } from '../../Runtime/EventManager';
 import { EVENT_ENUM } from '../../Enum';
 import { PlayerManager } from '../Player/PlayerManager';
 import { WoodenSkeletonManager } from '../WoodenSkeleton/WoodenSkeletonManager';
+import { DoorManager } from '../Door/DoorManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')
@@ -47,6 +48,7 @@ export class BattleManager extends Component {
 
             this.generateEnemies()
             this.generatePlayer()
+            this.generateDoor()
         }
     }
     //下一关
@@ -94,6 +96,15 @@ export class BattleManager extends Component {
         const woodenSkeletonManager=enemy.addComponent(WoodenSkeletonManager)
         await woodenSkeletonManager.init()
         DataManager.Instance.enemies.push(woodenSkeletonManager)
+    }
+    //加载门
+    async generateDoor(){
+        const door= createUINode()
+        door.setParent(this.stage)
+        const doorManager=door.addComponent(DoorManager)
+        await doorManager.init()
+        DataManager.Instance.door=doorManager
+        console.log('门加载完成')
     }
 
     //适配屏幕的方法

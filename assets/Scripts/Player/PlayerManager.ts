@@ -98,6 +98,7 @@ export class PlayerManager extends EntityManager {
         if(id){
             console.log("将要攻击")
             EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY,id)
+            EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN)
             return
         }
         //判断是否撞上了
