@@ -4,6 +4,7 @@ import { ENTITY_STATE_ENUM, PARAMS_NAME_ENUM } from "../../Enum";
 import idleSubStateMachine from "./idleSubStateMachine";
 import AttackSubStateMachine from "./AttackSubStateMachine";
 import { EntityManager } from "../../Base/EntityManager";
+import DeathSubStateMachine from "./DeathSubStateMachine";
 
 const { ccclass, property } = _decorator;
 
@@ -32,12 +33,15 @@ export class WoodenSkeletonStateMachine extends StateMachine {
     this.params.set(PARAMS_NAME_ENUM.IDLE,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.DIRECTION ,getInitParamsNumber())
     this.params.set(PARAMS_NAME_ENUM.ATTACK ,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.DEATH ,getInitParamsTrigger())
+
   }
   //初始化状态机
   initstateMachine(){
     //状态机需要根据状态修改参数，
     this.stateMachines.set(PARAMS_NAME_ENUM.IDLE,new idleSubStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.ATTACK,new AttackSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,new DeathSubStateMachine(this))
 
   }
 
@@ -59,13 +63,17 @@ export class WoodenSkeletonStateMachine extends StateMachine {
 
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
       case this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.DEATH):
+
         if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
             //如果是idle状态为true,则切换到idle状态
             this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
         }
         else if(this.params.get(PARAMS_NAME_ENUM.ATTACK).value){
-          console.log('attack')
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK)
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.DEATH).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.DEATH)
         }
         else{
           //如果都不是,则保持当前状态，这样才能触发setcurrentState方法中的run方法

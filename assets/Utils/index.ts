@@ -35,3 +35,6 @@ const getNumberWithinString=(str:string)=>  parseInt(str.match(reg)?.[1]  ||"0")
 
 export const sortSpriteFrame=(SpriteFrames:SpriteFrame[])=>SpriteFrames.sort((a,b)=>getNumberWithinString(a.name)-getNumberWithinString(b.name))
 //-----------------------------------------------------------------------------------------------------------------------
+
+//十二位长度随机字符串，作为敌人的唯一标识
+export const randomByLen=(len:number)=>Array.from({length:len}).reduce<string>((total,item)=>total+Math.floor(Math.random()*10),'')

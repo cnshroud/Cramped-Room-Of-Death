@@ -94,8 +94,10 @@ export class PlayerManager extends EntityManager {
             return
         }
         //判断是否将要攻击
-        if(this.willAttack(inputDirection)){
+        const id = this.willAttack(inputDirection)
+        if(id){
             console.log("将要攻击")
+            EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY,id)
             return
         }
         //判断是否撞上了
@@ -151,10 +153,10 @@ export class PlayerManager extends EntityManager {
     }
     //攻击判断
     willAttack(type:CONTORLLER_ENUM){
-        //拿到所有敌人位置，看玩家面向的方向继续往前走会不会碰到敌人
-        const enemies = DataManager.Instance.enemies
+        //拿到所有没死的敌人位置，看玩家面向的方向继续往前走会不会碰到敌人
+        const enemies = DataManager.Instance.enemies.filter(enemy=>enemy.state!==ENTITY_STATE_ENUM.DEATH)
         for (let i=0;i<enemies.length;i++){
-            const {x:enemyX,y:enemyY}=enemies[i]
+            const {x:enemyX,y:enemyY,id:enemyId}=enemies[i]
             if(
                 type===CONTORLLER_ENUM.TOP &&
                 this.direction===DIRECTION_ENUM.TOP &&
@@ -162,7 +164,7 @@ export class PlayerManager extends EntityManager {
                 enemyY==this.targetY-2
             ){
                 this.state=ENTITY_STATE_ENUM.ATTACK
-                return true
+                return enemyId
             }else  if(
                 type===CONTORLLER_ENUM.BOTTOM &&
                 this.direction===DIRECTION_ENUM.BOTTOM &&
@@ -170,7 +172,7 @@ export class PlayerManager extends EntityManager {
                 enemyY==this.targetY+2
             ){
                 this.state=ENTITY_STATE_ENUM.ATTACK
-                return true
+                return enemyId
             }
             else  if(
                 type===CONTORLLER_ENUM.LEFT &&
@@ -179,7 +181,7 @@ export class PlayerManager extends EntityManager {
                 enemyY==this.targetY
             ){
                 this.state=ENTITY_STATE_ENUM.ATTACK
-                return true
+                return enemyId
             }
             else  if(
                 type===CONTORLLER_ENUM.RIGHT &&
@@ -188,11 +190,11 @@ export class PlayerManager extends EntityManager {
                 enemyY==this.targetY
             ){
                 this.state=ENTITY_STATE_ENUM.ATTACK
-                return true
+                return enemyId
             }
         }
 
-        return false
+        return ''
     }
 
     //判断是否撞上墙了

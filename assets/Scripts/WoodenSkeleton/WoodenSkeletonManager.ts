@@ -25,16 +25,28 @@ export class WoodenSkeletonManager extends EntityManager {
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.onChangeDirection,this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.onAttack,this)
 
+    EventManager.Instance.on(EVENT_ENUM.ATTACK_ENEMY,this.onEnemyDeath,this)
+
 
 
       //玩家先生成时也触发这个方法
     this.onChangeDirection(true)
 
   };
+  onDestroy(){
+    super.onDestroy()
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_BORN,this.onChangeDirection)
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END,this.onChangeDirection)
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END,this.onAttack)
+    EventManager.Instance.off(EVENT_ENUM.ATTACK_ENEMY,this.onEnemyDeath)
+
+  }
+
+
   //敌人根据角色位置转向方法
   onChangeDirection(isInit=false){
     //判断玩家是否存在
-    if(!DataManager.Instance.player){
+    if(this.state===ENTITY_STATE_ENUM.DEATH||!DataManager.Instance.player){
       return
     }
     const {x:playerX,y:playerY}=DataManager.Instance.player
@@ -60,6 +72,10 @@ export class WoodenSkeletonManager extends EntityManager {
   }
 
   onAttack(){
+    //如果玩家死亡就不执行这个方法
+    if(this.state===ENTITY_STATE_ENUM.DEATH||!DataManager.Instance.player){
+      return
+    }
     //当玩家在敌人上下左右时，敌人攻击
     const {x:playerX,y:playerY,state:playerstate}=DataManager.Instance.player
 
@@ -75,5 +91,14 @@ export class WoodenSkeletonManager extends EntityManager {
       this.state=ENTITY_STATE_ENUM.IDLE
     }
   }
-
+  onEnemyDeath(id:string){
+    console.log(id)
+    console.log("this.id",this.id)
+    if(this.state===ENTITY_STATE_ENUM.DEATH){
+      return
+    }
+    if(this.id ===id){
+      this.state=ENTITY_STATE_ENUM.DEATH
+    }
+  }
 }

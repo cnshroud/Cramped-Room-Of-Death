@@ -67,7 +67,7 @@ export class PlayerStateMachine extends StateMachine {
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKLEFT,new BlockLeftStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKRIGHT,new BlockRightStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,new BlockTurnLeftStateMachine(this))
-    this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT,new BlockTurnRightSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNRIGHT,new BlockTurnRightSubStateMachine(this))
 
 
     this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,new DeathSubStateMachine(this))
@@ -118,7 +118,9 @@ export class PlayerStateMachine extends StateMachine {
         else if(this.params.get(PARAMS_NAME_ENUM.TURNRIGHT).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.TURNRIGHT)
         }
-
+        else if(this.params.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT)
+        }
         else if(this.params.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT)
         }

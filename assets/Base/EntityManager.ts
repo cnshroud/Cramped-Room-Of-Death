@@ -5,6 +5,7 @@ import { IEntity } from '../Levels';
 import { DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, PARAMS_NAME_ENUM } from '../Enum';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Scripts/Tile/TileManager';
 import { StateMachine } from './StateMachine';
+import { randomByLen } from '../Utils';
 const { ccclass, property } = _decorator;
 //实体管理器基类
 @ccclass('EntityManager')
@@ -22,6 +23,8 @@ export class EntityManager extends Component {
     //实体类型
     private type:ENTITY_TYPE_ENUM
 
+    //实体的id，唯一标识,12位长度
+    id: string=randomByLen(12);
 
     //给私有属性设置getset方法
     get direction(){
@@ -83,5 +86,7 @@ export class EntityManager extends Component {
       //设置角色位置，因为y是相反的所以要给-，人物宽度是四个瓦片的宽度，所以要把人物的坐标移动固定位置
       this.node.setPosition(this.x*TILE_WIDTH-TILE_WIDTH*1.5,-this.y*TILE_HEIGHT+TILE_HEIGHT*1.5)
   }
+  onDestroy(){
 
+  }
 }
