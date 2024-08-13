@@ -11,6 +11,7 @@ import { PlayerManager } from '../Player/PlayerManager';
 import { WoodenSkeletonManager } from '../WoodenSkeleton/WoodenSkeletonManager';
 import { DoorManager } from '../Door/DoorManager';
 import { IronSkeletonManager } from '../IronSkeleton/IronSkeletonManager';
+import { BurstManager } from '../Burst/BurstManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')
@@ -46,10 +47,11 @@ export class BattleManager extends Component {
             DataManager.Instance.mapRowCount=this.level.mapInfo.length ||0
             DataManager.Instance.mapColCount=this.level.mapInfo[0].length ||0
             this.generateTileMap()
-
+            this.generateBurst()
             this.generateEnemies()
-            this.generatePlayer()
             this.generateDoor()
+
+            this.generatePlayer()
         }
     }
     //下一关
@@ -132,13 +134,27 @@ export class BattleManager extends Component {
         const doorManager=door.addComponent(DoorManager)
         await doorManager.init({
             x:7,
-            y:9,
+            y:8,
             type:ENTITY_TYPE_ENUM.DOOR,
             direction:DIRECTION_ENUM.TOP,
             state:ENTITY_STATE_ENUM.IDLE,
            })
         DataManager.Instance.door=doorManager
-        console.log('门加载完成')
+    }
+
+    //加载地裂砖块
+    async generateBurst(){
+        const burst= createUINode()
+        burst.setParent(this.stage)
+        const burstManager=burst.addComponent(BurstManager)
+        await burstManager.init({
+            x:2,
+            y:6,
+            type:ENTITY_TYPE_ENUM.BURST,
+            direction:DIRECTION_ENUM.TOP,
+            state:ENTITY_STATE_ENUM.IDLE,
+           })
+        DataManager.Instance.bursts.push(burstManager)
     }
 
     //适配屏幕的方法

@@ -6,8 +6,7 @@ import { EventManager } from "../Runtime/EventManager";
 import { DataManager } from "../Runtime/DataManager";
 
 const { ccclass, property } = _decorator;
-
-//木骷髅管理器，管理木骷髅动画
+//敌人实体基类
 @ccclass('enemyManager')
 export class enemyManager extends EntityManager {
   async init(params:IEntity){
@@ -61,8 +60,6 @@ export class enemyManager extends EntityManager {
 
 
   onEnemyDeath(id:string){
-    console.log(id)
-    console.log("this.id",this.id)
     if(this.state===ENTITY_STATE_ENUM.DEATH){
       return
     }

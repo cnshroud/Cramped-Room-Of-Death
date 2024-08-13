@@ -85,8 +85,8 @@ export class EntityManager extends Component {
     update(){
       //设置角色位置，因为y是相反的所以要给-，人物宽度是四个瓦片的宽度，所以要把人物的坐标移动固定位置
       this.node.setPosition(this.x*TILE_WIDTH-TILE_WIDTH*1.5,-this.y*TILE_HEIGHT+TILE_HEIGHT*1.5)
-  }
-  onDestroy(){
+    }
+    onDestroy(){
 
-  }
+    }
 }

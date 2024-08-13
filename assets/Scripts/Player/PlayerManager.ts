@@ -1,6 +1,6 @@
 
 import { _decorator,} from 'cc';
-import { CONTORLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM } from '../../Enum';
+import { CONTROLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM } from '../../Enum';
 import { EventManager } from '../../Runtime/EventManager';
 import { PlayerStateMachine } from './PlayerStateMachine';
 import { EntityManager } from '../../Base/EntityManager';
@@ -74,12 +74,13 @@ export class PlayerManager extends EntityManager {
     }
     //角色死亡
     onDead(type:ENTITY_STATE_ENUM){
+        console.log(type)
         this.state=type
     }
 
 
     //人物移动前处理用户输入的方法
-    inputHandle(inputDirection:CONTORLLER_ENUM){
+    inputHandle(inputDirection:CONTROLLER_ENUM){
         //判断是否正在移动
         if(this.isMoving){
             return
@@ -91,7 +92,6 @@ export class PlayerManager extends EntityManager {
         //判断是否将要攻击
         const id = this.willAttack(inputDirection)
         if(id){
-            console.log("将要攻击")
             EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY,id)
             EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN)
             return
@@ -105,20 +105,20 @@ export class PlayerManager extends EntityManager {
 
     }
     //人物移动
-    move(inputDirection:CONTORLLER_ENUM){
-        if(inputDirection==CONTORLLER_ENUM.TOP){
+    move(inputDirection:CONTROLLER_ENUM){
+        if(inputDirection===CONTROLLER_ENUM.TOP){
             this.targetY-=1
             this.isMoving=true
-        }else if(inputDirection==CONTORLLER_ENUM.BOTTOM){
+        }else if(inputDirection===CONTROLLER_ENUM.BOTTOM){
             this.targetY+=1
             this.isMoving=true
-        }else if(inputDirection==CONTORLLER_ENUM.RIGHT){
+        }else if(inputDirection===CONTROLLER_ENUM.RIGHT){
             this.targetX+=1
             this.isMoving=true
-        }else if(inputDirection==CONTORLLER_ENUM.LEFT){
+        }else if(inputDirection===CONTROLLER_ENUM.LEFT){
             this.targetX-=1
             this.isMoving=true
-        }else if(inputDirection==CONTORLLER_ENUM.TURNLEFT){
+        }else if(inputDirection===CONTROLLER_ENUM.TURNLEFT){
             //先改变数据在调用渲染方法
             //当点击左转时，如果角色面向上时，会转为面向左边
             if(this.direction===DIRECTION_ENUM.TOP){
@@ -131,30 +131,32 @@ export class PlayerManager extends EntityManager {
                 this.direction=DIRECTION_ENUM.TOP
             }
             //旋转时触发移动结束事件
-            EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
             this.state=ENTITY_STATE_ENUM.TURNLEFT
-        }else if(inputDirection==CONTORLLER_ENUM.TURNRIGHT){
-            if(this.direction===DIRECTION_ENUM.TOP){
-                this.direction=DIRECTION_ENUM.RIGHT
-            }else if(this.direction===DIRECTION_ENUM.RIGHT){
-                this.direction=DIRECTION_ENUM.BOTTOM
-            }else if(this.direction===DIRECTION_ENUM.BOTTOM){
-                this.direction=DIRECTION_ENUM.LEFT
-             }else if(this.direction===DIRECTION_ENUM.LEFT){
-                this.direction=DIRECTION_ENUM.TOP
-            }
-            this.state=ENTITY_STATE_ENUM.TURNRIGHT
+            console.log("左转")
             EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
-        }
+        } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT) {
+            if (this.direction === DIRECTION_ENUM.TOP) {
+              this.direction = DIRECTION_ENUM.RIGHT
+            } else if (this.direction === DIRECTION_ENUM.BOTTOM) {
+              this.direction = DIRECTION_ENUM.LEFT
+            } else if (this.direction === DIRECTION_ENUM.LEFT) {
+              this.direction = DIRECTION_ENUM.TOP
+            } else if (this.direction === DIRECTION_ENUM.RIGHT) {
+              this.direction = DIRECTION_ENUM.BOTTOM
+            }
+            this.state = ENTITY_STATE_ENUM.TURNRIGHT
+            console.log("右转")
+            EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
+          }
     }
     //攻击判断
-    willAttack(type:CONTORLLER_ENUM){
+    willAttack(type:CONTROLLER_ENUM){
         //拿到所有没死的敌人位置，看玩家面向的方向继续往前走会不会碰到敌人
         const enemies = DataManager.Instance.enemies.filter(enemy=>enemy.state!==ENTITY_STATE_ENUM.DEATH)
         for (let i=0;i<enemies.length;i++){
             const {x:enemyX,y:enemyY,id:enemyId}=enemies[i]
             if(
-                type===CONTORLLER_ENUM.TOP &&
+                type===CONTROLLER_ENUM.TOP &&
                 this.direction===DIRECTION_ENUM.TOP &&
                 enemyX==this.x &&
                 enemyY==this.targetY-2
@@ -162,7 +164,7 @@ export class PlayerManager extends EntityManager {
                 this.state=ENTITY_STATE_ENUM.ATTACK
                 return enemyId
             }else  if(
-                type===CONTORLLER_ENUM.BOTTOM &&
+                type===CONTROLLER_ENUM.BOTTOM &&
                 this.direction===DIRECTION_ENUM.BOTTOM &&
                 enemyX==this.x &&
                 enemyY==this.targetY+2
@@ -171,7 +173,7 @@ export class PlayerManager extends EntityManager {
                 return enemyId
             }
             else  if(
-                type===CONTORLLER_ENUM.LEFT &&
+                type===CONTROLLER_ENUM.LEFT &&
                 this.direction===DIRECTION_ENUM.LEFT &&
                 enemyX==this.x-2 &&
                 enemyY==this.targetY
@@ -180,7 +182,7 @@ export class PlayerManager extends EntityManager {
                 return enemyId
             }
             else  if(
-                type===CONTORLLER_ENUM.RIGHT &&
+                type===CONTROLLER_ENUM.RIGHT &&
                 this.direction===DIRECTION_ENUM.RIGHT &&
                 enemyX==this.x+2 &&
                 enemyY==this.targetY
@@ -194,7 +196,7 @@ export class PlayerManager extends EntityManager {
     }
 
     //判断是否撞上墙了
-    willBlock(inputDirection:CONTORLLER_ENUM){
+    willBlock(inputDirection:CONTROLLER_ENUM){
         //把自己人物的xy和方向解构出来
         const { targetX:x,targetY:y,direction}=this
         //把瓦片信息解构出来
@@ -202,10 +204,11 @@ export class PlayerManager extends EntityManager {
 
         const {x:doorX,y:doorY,state:doorState} =DataManager.Instance.door
         const enemies=DataManager.Instance.enemies.filter(enemy=>enemy.state!==ENTITY_STATE_ENUM.DEATH)
+        const bursts=DataManager.Instance.bursts.filter(burst=>burst.state!==ENTITY_STATE_ENUM.DEATH)
 
-        const {mapColCount:row,mapRowCount:column}=DataManager.Instance
+        // const {mapColCount:row,mapRowCount:column}=DataManager.Instance
         //输入方向是上
-        if(inputDirection===CONTORLLER_ENUM.TOP){
+        if(inputDirection===CONTROLLER_ENUM.TOP){
             //面向方向是上
             if(direction===DIRECTION_ENUM.TOP){
                 //角色上方的第一个瓦片坐标
@@ -240,6 +243,13 @@ export class PlayerManager extends EntityManager {
                         return true
                     }
                 }
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((x===burstX&&playerNextY===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
 
                 //当人能走（moveable为true），枪也能走的情况下(瓦片不存在或者turnable为true)
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
@@ -250,6 +260,7 @@ export class PlayerManager extends EntityManager {
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.BOTTOM){
+                //面向方向是下------------------------------------------------------
                 const playerNextY = y-1
                 if(playerNextY<0){
                     this.state=ENTITY_STATE_ENUM.BLOCKFRONT
@@ -270,6 +281,15 @@ export class PlayerManager extends EntityManager {
                     ){
                         this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                         return true
+                    }
+                }
+
+
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((x===burstX&&playerNextY===burstY)){
+                        return false
                     }
                 }
 
@@ -302,6 +322,14 @@ export class PlayerManager extends EntityManager {
                     ){
                         this.state=ENTITY_STATE_ENUM.BLOCKFRONT
                         return true
+                    }
+                }
+
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((x===burstX&&playerNextY===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
                     }
                 }
 
@@ -337,6 +365,13 @@ export class PlayerManager extends EntityManager {
                     }
                 }
 
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((x===burstX&&playerNextY===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
 
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
                 }else{
@@ -351,7 +386,7 @@ export class PlayerManager extends EntityManager {
 
 
 
-        }else if(inputDirection===CONTORLLER_ENUM.BOTTOM){
+        }else if(inputDirection===CONTROLLER_ENUM.BOTTOM){
             //下-----------------------------------------------------------------------------------------------------------------------
             if(direction===DIRECTION_ENUM.TOP){
                 const playerNextY = y+1
@@ -377,6 +412,13 @@ export class PlayerManager extends EntityManager {
                     }
                 }
 
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((x===burstX&&playerNextY===burstY)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable){
 
                 }else{
@@ -409,7 +451,13 @@ export class PlayerManager extends EntityManager {
                         return true
                     }
                 }
-
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((x===burstX&&playerNextY===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
@@ -440,6 +488,13 @@ export class PlayerManager extends EntityManager {
                     ){
                         this.state=ENTITY_STATE_ENUM.BLOCKBACK
                         return true
+                    }
+                }
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((x===burstX&&playerNextY===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
                     }
                 }
 
@@ -476,7 +531,13 @@ export class PlayerManager extends EntityManager {
                         return true
                     }
                 }
-
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((x===burstX&&playerNextY===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
@@ -487,7 +548,7 @@ export class PlayerManager extends EntityManager {
 
 
 
-        }else if(inputDirection===CONTORLLER_ENUM.LEFT){
+        }else if(inputDirection===CONTROLLER_ENUM.LEFT){
             //左-----------------------------------------------------------------------------------------------------------------
             if(direction===DIRECTION_ENUM.TOP){
                 const playerNextX = x-1
@@ -514,7 +575,13 @@ export class PlayerManager extends EntityManager {
                         return true
                     }
                 }
-
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((playerNextX===burstX&&y===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
@@ -547,6 +614,13 @@ export class PlayerManager extends EntityManager {
                     }
                 }
 
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((playerNextX===burstX&&y===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
@@ -554,18 +628,13 @@ export class PlayerManager extends EntityManager {
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.LEFT){
-                //角色上方的第一个瓦片坐标
                 const playerNextX = x-1
-                //枪上方的第一个瓦片坐标
                 const weaponNextX = x-2
-                //判断是否走出地图了
                 if(playerNextX<0){
                     this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
                 }
-                //角色上方的第一个瓦片信息（用于判断人能不能走）
                 const playerTile=tileInfo[playerNextX][y]
-                //角色上方的第二个瓦片信息（用于判断枪能不能走）
                 const weaponTile=tileInfo[weaponNextX][y]
 
                 if(((playerNextX===doorX&&y===doorY)||(weaponNextX===doorX&&y===doorY))&&
@@ -583,8 +652,13 @@ export class PlayerManager extends EntityManager {
                         return true
                     }
                 }
-
-                //当人能走（moveable为true），枪也能走的情况下(瓦片不存在或者turnable为true)
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((playerNextX===burstX&&y===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
@@ -592,9 +666,7 @@ export class PlayerManager extends EntityManager {
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.RIGHT){
-                //角色上方的第一个瓦片坐标
                 const playerNextX = x-1
-                //判断是否走出地图了
                 if(playerNextX<0){
                     this.state=ENTITY_STATE_ENUM.BLOCKLEFT
                     return true
@@ -617,6 +689,13 @@ export class PlayerManager extends EntityManager {
                         return true
                     }
                 }
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((playerNextX===burstX&&y===burstY)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable){
 
                 }else{
@@ -626,7 +705,7 @@ export class PlayerManager extends EntityManager {
             }
 
 
-        }else if(inputDirection===CONTORLLER_ENUM.RIGHT){
+        }else if(inputDirection===CONTROLLER_ENUM.RIGHT){
             //右---------------------------------------------------------------------------------------------------------------
             if(direction===DIRECTION_ENUM.TOP){
                 const playerNextX = x+1
@@ -654,6 +733,13 @@ export class PlayerManager extends EntityManager {
                     }
                 }
 
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((playerNextX===burstX&&y===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
@@ -686,6 +772,13 @@ export class PlayerManager extends EntityManager {
                     }
                 }
 
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((playerNextX===burstX&&y===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
@@ -716,6 +809,13 @@ export class PlayerManager extends EntityManager {
                     }
                 }
 
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((playerNextX===burstX&&y===burstY)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable){
 
                 }else{
@@ -723,18 +823,13 @@ export class PlayerManager extends EntityManager {
                     return true
                 }
             }else if(direction===DIRECTION_ENUM.RIGHT){
-                //角色右方的第一个瓦片坐标
                 const playerNextX = x+1
-                //枪上方的第一个瓦片坐标
                 const weaponNextX = x+2
-                //判断是否走出地图了
                 if(playerNextX<0){
                     this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
-                //角色上方的第一个瓦片信息（用于判断人能不能走）
                 const playerTile=tileInfo[playerNextX][y]
-                //角色上方的第二个瓦片信息（用于判断枪能不能走）
                 const weaponTile=tileInfo[weaponNextX][y]
 
                 if(((playerNextX===doorX&&y===doorY)||(weaponNextX===doorX&&y===doorY))&&
@@ -753,7 +848,13 @@ export class PlayerManager extends EntityManager {
                     }
                 }
 
-                //当人能走（moveable为true），枪也能走的情况下(瓦片不存在或者turnable为true)
+                //碰到地裂瓦片不算撞到了
+                for (let i = 0; i < bursts.length; i++) {
+                    const {x:burstX,y:burstY} = bursts[i];
+                    if((playerNextX===burstX&&y===burstY)&&(!weaponTile||weaponTile.turnable)){
+                        return false
+                    }
+                }
                 if(playerTile&&playerTile.moveable&&(!weaponTile||weaponTile.turnable)){
 
                 }else{
@@ -763,7 +864,7 @@ export class PlayerManager extends EntityManager {
             }
 
 
-        }else if(inputDirection===CONTORLLER_ENUM.TURNLEFT){
+        }else if(inputDirection===CONTROLLER_ENUM.TURNLEFT){
             //左转按钮判断--------------------------------------------------------------------------------------------------------------------------
             //左转是否撞墙的判定需要三个瓦片
             let nextX
@@ -816,9 +917,9 @@ export class PlayerManager extends EntityManager {
                 this.state=ENTITY_STATE_ENUM.BLOCKTURNLEFT
                 return true
             }
-        }else if(inputDirection===CONTORLLER_ENUM.TURNRIGHT){
-            //左转按钮判断--------------------------------------------------------------------------------------------------------------------------
-            //左转是否撞墙的判定需要三个瓦片
+        }else if(inputDirection===CONTROLLER_ENUM.TURNRIGHT){
+            //右转按钮判断--------------------------------------------------------------------------------------------------------------------------
+
             let nextX
             let nextY
             //如果人物方向向上，则需要检测上、左、左上三个瓦片,其他方向同理

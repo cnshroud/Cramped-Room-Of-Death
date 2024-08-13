@@ -38,7 +38,7 @@ export enum EVENT_ENUM{
 }
 
 //移动枚举
-export enum CONTORLLER_ENUM{
+export enum CONTROLLER_ENUM{
   TOP="TOP",
   BOTTOM="BOTTOM",
   LEFT="LEFT",
@@ -109,4 +109,5 @@ export enum ENTITY_TYPE_ENUM{
   SKELETON_WOODEN="SKELETON_WOODEN",
   SKELETON_IRON="SKELETON_IRON",
   DOOR="DOOR",
+  BURST="BURST",
 }

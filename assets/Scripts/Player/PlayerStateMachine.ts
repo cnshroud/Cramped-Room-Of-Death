@@ -14,6 +14,7 @@ import BlockTurnRightSubStateMachine from './BlockTurnRightSubStateMachine';
 import TurnRightSubStateMachine from './TurnRightSubStateMachine';
 import DeathSubStateMachine from './DeathSubStateMachine';
 import AttackSubStateMachine from './AttackSubStateMachine';
+import AirDeathSubStateMachine from './AirDeathSubStateMachine';
 const { ccclass, property } = _decorator;
 
 //现在增加状态机的方法就很简单了，
@@ -52,6 +53,7 @@ export class PlayerStateMachine extends StateMachine {
 
 
     this.params.set(PARAMS_NAME_ENUM.DEATH,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.AIRDEATH,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.ATTACK,getInitParamsTrigger())
   }
   //初始化状态机
@@ -71,6 +73,7 @@ export class PlayerStateMachine extends StateMachine {
 
 
     this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,new DeathSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.AIRDEATH,new AirDeathSubStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.ATTACK,new AttackSubStateMachine(this))
   }
 
@@ -105,6 +108,7 @@ export class PlayerStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT):
 
       case this.stateMachines.get(PARAMS_NAME_ENUM.DEATH):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.AIRDEATH):
       case this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK):
         if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
           //如果是idle状态为true,则切换到idle状态
@@ -139,6 +143,9 @@ export class PlayerStateMachine extends StateMachine {
         //死亡
         else if(this.params.get(PARAMS_NAME_ENUM.DEATH).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.DEATH)
+        }
+        else if(this.params.get(PARAMS_NAME_ENUM.AIRDEATH).value){
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.AIRDEATH)
         }
         else if(this.params.get(PARAMS_NAME_ENUM.ATTACK).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK)
