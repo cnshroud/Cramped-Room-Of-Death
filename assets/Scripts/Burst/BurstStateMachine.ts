@@ -15,7 +15,7 @@ export class BurstStateMachine extends StateMachine {
   //初始化方法
   async init(){
     //加载Animation动画
-    this.animationComponent=  this.addComponent(Animation)
+    this.animationComponent=  this.node.addComponent(Animation)
     this.initParams()
     this.initstateMachine()
     this.initAnimationEvent()
@@ -47,14 +47,11 @@ export class BurstStateMachine extends StateMachine {
   //当参数改变时执行run方法
   run(){
     switch(this.currentState){
-
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
       case this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK):
       case this.stateMachines.get(PARAMS_NAME_ENUM.DEATH):
-
         if(this.params.get(PARAMS_NAME_ENUM.IDLE).value){
-            //如果是idle状态为true,则切换到idle状态
-            this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
+          this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
         }
         else if(this.params.get(PARAMS_NAME_ENUM.ATTACK).value){
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK)
@@ -63,12 +60,10 @@ export class BurstStateMachine extends StateMachine {
           this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.DEATH)
         }
         else{
-          //如果都不是,则保持当前状态，这样才能触发setcurrentState方法中的run方法
           this.currentState=this.currentState
         }
         break;
       default:
-        //默认状态
         this.currentState=this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)
     }
   }

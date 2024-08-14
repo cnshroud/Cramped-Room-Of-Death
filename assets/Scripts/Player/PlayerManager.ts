@@ -45,6 +45,10 @@ export class PlayerManager extends EntityManager {
         EventManager.Instance.on(EVENT_ENUM.ATTACK_PLAYER,this.onDead,this)
 
     };
+    onDestroy() {
+        EventManager.Instance.off(EVENT_ENUM.PLAYER_CTRL,this.inputHandle)
+        EventManager.Instance.off(EVENT_ENUM.ATTACK_PLAYER,this.onDead)
+    }
 
     update(){
         this.updateXY()
@@ -86,7 +90,10 @@ export class PlayerManager extends EntityManager {
             return
         }
         //判断人物是否死亡或攻击,这个状态下不能移动
-        if(this.state==ENTITY_STATE_ENUM.DEATH||this.state==ENTITY_STATE_ENUM.AIRDEATH || this.state==ENTITY_STATE_ENUM.ATTACK){
+        if(this.state==ENTITY_STATE_ENUM.DEATH||
+            this.state==ENTITY_STATE_ENUM.AIRDEATH ||
+            this.state==ENTITY_STATE_ENUM.ATTACK
+        ){
             return
         }
         //判断是否将要攻击
@@ -127,12 +134,11 @@ export class PlayerManager extends EntityManager {
                 this.direction=DIRECTION_ENUM.BOTTOM
             }else if(this.direction===DIRECTION_ENUM.BOTTOM){
                 this.direction=DIRECTION_ENUM.RIGHT
-             }else if(this.direction===DIRECTION_ENUM.RIGHT){
+            }else if(this.direction===DIRECTION_ENUM.RIGHT){
                 this.direction=DIRECTION_ENUM.TOP
             }
             //旋转时触发移动结束事件
             this.state=ENTITY_STATE_ENUM.TURNLEFT
-            console.log("左转")
             EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
         } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT) {
             if (this.direction === DIRECTION_ENUM.TOP) {
@@ -145,14 +151,15 @@ export class PlayerManager extends EntityManager {
               this.direction = DIRECTION_ENUM.BOTTOM
             }
             this.state = ENTITY_STATE_ENUM.TURNRIGHT
-            console.log("右转")
             EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
           }
     }
     //攻击判断
     willAttack(type:CONTROLLER_ENUM){
         //拿到所有没死的敌人位置，看玩家面向的方向继续往前走会不会碰到敌人
-        const enemies = DataManager.Instance.enemies.filter(enemy=>enemy.state!==ENTITY_STATE_ENUM.DEATH)
+        const enemies = DataManager.Instance.enemies.filter(
+            enemy=>enemy.state!==ENTITY_STATE_ENUM.DEATH
+        )
         for (let i=0;i<enemies.length;i++){
             const {x:enemyX,y:enemyY,id:enemyId}=enemies[i]
             if(
@@ -203,8 +210,13 @@ export class PlayerManager extends EntityManager {
         const {tileInfo} =DataManager.Instance
 
         const {x:doorX,y:doorY,state:doorState} =DataManager.Instance.door
-        const enemies=DataManager.Instance.enemies.filter(enemy=>enemy.state!==ENTITY_STATE_ENUM.DEATH)
-        const bursts=DataManager.Instance.bursts.filter(burst=>burst.state!==ENTITY_STATE_ENUM.DEATH)
+        const enemies=DataManager.Instance.enemies.filter(
+            enemy=>enemy.state!==ENTITY_STATE_ENUM.DEATH
+        )
+        const bursts=DataManager.Instance.bursts.filter(
+            burst=>burst.state!==ENTITY_STATE_ENUM.DEATH
+        )
+
 
         // const {mapColCount:row,mapRowCount:column}=DataManager.Instance
         //输入方向是上

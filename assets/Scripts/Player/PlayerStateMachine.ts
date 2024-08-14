@@ -11,9 +11,9 @@ import BlockBackStateMachine from './BlockBackStateMachine';
 import BlockLeftStateMachine from './BlockLeftStateMachine';
 import BlockRightStateMachine from './BlockRightStateMachine';
 import BlockTurnRightSubStateMachine from './BlockTurnRightSubStateMachine';
-import TurnRightSubStateMachine from './TurnRightSubStateMachine';
 import DeathSubStateMachine from './DeathSubStateMachine';
 import AttackSubStateMachine from './AttackSubStateMachine';
+import TurnRightSubStateMachine from './TurnRightSubStateMachine';
 import AirDeathSubStateMachine from './AirDeathSubStateMachine';
 const { ccclass, property } = _decorator;
 
@@ -29,7 +29,7 @@ export class PlayerStateMachine extends StateMachine {
   //初始化方法
   async init(){
     //加载Animation动画
-    this.animationComponent=  this.addComponent(Animation)
+    this.animationComponent=  this.node.addComponent(Animation)
     this.initParams()
     this.initstateMachines()
     this.initAnimationEvent()
@@ -41,7 +41,7 @@ export class PlayerStateMachine extends StateMachine {
   initParams(){
     this.params.set(PARAMS_NAME_ENUM.IDLE,getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.TURNLEFT ,getInitParamsTrigger())
-    this.params.set(PARAMS_NAME_ENUM.TURNRIGHT ,getInitParamsTrigger())
+    this.params.set(PARAMS_NAME_ENUM.TURNRIGHT, getInitParamsTrigger())
     this.params.set(PARAMS_NAME_ENUM.DIRECTION ,getInitParamsNumber())
     //向前撞
     this.params.set(PARAMS_NAME_ENUM.BLOCKFRONT,getInitParamsTrigger())
@@ -73,7 +73,7 @@ export class PlayerStateMachine extends StateMachine {
 
 
     this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,new DeathSubStateMachine(this))
-    this.stateMachines.set(PARAMS_NAME_ENUM.AIRDEATH,new AirDeathSubStateMachine(this))
+    this.stateMachines.set(PARAMS_NAME_ENUM.AIRDEATH, new AirDeathSubStateMachine(this))
     this.stateMachines.set(PARAMS_NAME_ENUM.ATTACK,new AttackSubStateMachine(this))
   }
 
@@ -100,6 +100,7 @@ export class PlayerStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
 
       case this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.TURNRIGHT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKFRONT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKBACK):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKLEFT):

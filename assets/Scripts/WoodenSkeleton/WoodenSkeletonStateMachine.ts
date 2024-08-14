@@ -20,7 +20,7 @@ export class WoodenSkeletonStateMachine extends StateMachine {
   //初始化方法
   async init(){
     //加载Animation动画
-    this.animationComponent=  this.addComponent(Animation)
+    this.animationComponent=  this.node.addComponent(Animation)
     this.initParams()
     this.initstateMachine()
     this.initAnimationEvent()

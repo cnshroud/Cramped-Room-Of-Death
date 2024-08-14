@@ -46,9 +46,9 @@ export class BurstManager extends enemyManager {
       this.state=ENTITY_STATE_ENUM.ATTACK
     }else if (this.state===ENTITY_STATE_ENUM.ATTACK ){
       this.state=ENTITY_STATE_ENUM.DEATH
-      if(this.x ===playerX&&this.y===playerY){
-        console.log('玩家死亡')
-        EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER,ENTITY_STATE_ENUM.AIRDEATH)
+      //判断人是否在地裂上
+      if (this.x === playerX && this.y === playerY) {
+        EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.AIRDEATH)
       }
     }
   }
