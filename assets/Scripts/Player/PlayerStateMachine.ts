@@ -94,7 +94,7 @@ export class PlayerStateMachine extends StateMachine {
   }
 
 
-  //当参数改变时执行run方法
+  //根据当前所在状态（currentState）和参数（params）决定怎么切换状态机
   run(){
     switch(this.currentState){
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):

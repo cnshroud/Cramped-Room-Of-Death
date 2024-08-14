@@ -13,7 +13,13 @@ export interface IEntity{
   state:ENTITY_STATE_ENUM;
 
 }
-
+//地刺类型
+export interface ISpikes{
+  x:number;
+  y:number;
+  type:ENTITY_TYPE_ENUM ;
+  count:number
+}
 //定义类型，这样打代码就有类型提示
 export interface ITile{
     src: number | null, //地图上可能是空的所以有null
