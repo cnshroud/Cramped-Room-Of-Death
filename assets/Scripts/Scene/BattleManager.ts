@@ -27,6 +27,8 @@ export class BattleManager extends Component {
         DataManager.Instance.levelIndex=1
         //加载时在渲染中添加nextLevel方法
         EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL,this.nextLevel,this)
+        EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.checkArrived,this)
+
     }
     onDestroy(){
          //加载时在渲染中添加nextLevel方法
@@ -155,6 +157,18 @@ export class BattleManager extends Component {
 
         }
         await Promise.all(promise)
+    }
+
+    //检测玩家是否到达门的位置
+    checkArrived(){
+        const {x:playerX,y:playerY}=DataManager.Instance.player
+        const {x:doorX,y:doorY,state:doorState}=DataManager.Instance.door
+        console.log(playerX,playerY,doorX,doorY,doorState)
+        if(playerX===doorX&&playerY===doorY&&doorState===ENTITY_STATE_ENUM.DEATH){
+            EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL)
+            console.log("下一关")
+        }
+
     }
 
     //适配屏幕的方法

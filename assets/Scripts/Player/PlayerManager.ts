@@ -34,7 +34,8 @@ export class PlayerManager extends EntityManager {
         this.targetX=this.x
         this.targetY=this.y
         //设置初始方向
-        this.direction=DIRECTION_ENUM.TOP
+        // this.direction=DIRECTION_ENUM.TOP
+
         //数据ui分离后只需要修改状态即可setParams
         this.state=ENTITY_STATE_ENUM.IDLE
 
