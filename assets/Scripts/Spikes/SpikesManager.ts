@@ -33,7 +33,7 @@ export class SpikesManager extends Component {
     }
     set totalCount(newCount:number){
         this._totalCount=newCount
-        this.fsm.setParams(PARAMS_NAME_ENUM.SPIKES_CUR_COUNT,newCount)
+        this.fsm.setParams(PARAMS_NAME_ENUM.SPIKES_TOTAL_COUNT,newCount)
     }
 
     async init(params:ISpikes){
