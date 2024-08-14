@@ -1,11 +1,13 @@
 
 import { _decorator, animation, Animation, AnimationClip, Component, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
-import { ENTITY_TYPE_ENUM, PARAMS_NAME_ENUM, SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM } from '../../Enum';
+import { ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM, SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM } from '../../Enum';
 import { StateMachine } from '../../Base/StateMachine';
 import { randomByLen } from '../../Utils';
 import { IEntity, ISpikes } from '../../Levels';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 import { SpikeStateMachine } from './SpikeStateMachine';
+import { EventManager } from '../../Runtime/EventManager';
+import { DataManager } from '../../Runtime/DataManager';
 const { ccclass, property } = _decorator;
 //地刺管理器类
 @ccclass('SpikesManager')
@@ -51,13 +53,39 @@ export class SpikesManager extends Component {
         this.totalCount=SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM[this.type]
         this.count=params.count
 
+        //监听玩家移动
+        EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.onLoop,this)
     };
-
+    onDestroy(){
+        EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END,this.onLoop)
+    }
     update(){
       //设置角色位置，因为y是相反的所以要给-，人物宽度是四个瓦片的宽度，所以要把人物的坐标移动固定位置
       this.node.setPosition(this.x*TILE_WIDTH-TILE_WIDTH*1.5,-this.y*TILE_HEIGHT+TILE_HEIGHT*1.5)
     }
-    onDestroy(){
+    //然后当前点数不断++
+    onLoop(){
 
+        if(this.count===this.totalCount){
+            this.count=1
+        }else{
+            this.count++
+        }
+        this.onAttack()
+    }
+    //点数返回为0
+    backZero(){
+        this.count=0
+    }
+    onAttack(){
+        //人物不存在就return
+        if( !DataManager.Instance.player){
+            return
+        }
+        const {x:playerX,y:playerY}= DataManager.Instance.player
+        //当位置相同并且当前点数等于总点数
+        if(playerX===this.x&&playerY===this.y && this.count===this.totalCount){
+            EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER,ENTITY_STATE_ENUM.DEATH)
+        }
     }
 }

@@ -15,7 +15,7 @@ export default class SpikesThreeSubStateMachine extends SpikesSubStateMachine {
     this.stateMachines.set(SPIKE_COUNT_ENUM.ONE,new State(fsm,`${BASE_URL}/one`))
     this.stateMachines.set(SPIKE_COUNT_ENUM.TWO,new State(fsm,`${BASE_URL}/two`))
     this.stateMachines.set(SPIKE_COUNT_ENUM.THREE,new State(fsm,`${BASE_URL}/three`))
-    this.stateMachines.set(SPIKE_COUNT_ENUM.THREE,new State(fsm,`${BASE_URL}/four`))
+    this.stateMachines.set(SPIKE_COUNT_ENUM.FOUR,new State(fsm,`${BASE_URL}/four`))
 
   }
 

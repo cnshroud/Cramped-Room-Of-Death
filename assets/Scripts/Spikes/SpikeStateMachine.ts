@@ -6,6 +6,7 @@ import SpikesOneSubStateMachine from "./SpikesOneSubStateMachine";
 import SpikesTwoSubStateMachine from "./SpikesTwoSubStateMachine";
 import SpikesThreeSubStateMachine from "./SpikesThreeSubStateMachine";
 import SpikesFourSubStateMachine from "./SpikesFourSubStateMachine";
+import { SpikesManager } from "./SpikesManager";
 
 const { ccclass, property } = _decorator;
 @ccclass('SpikeStateMachine')
@@ -43,14 +44,24 @@ export class SpikeStateMachine extends StateMachine {
 
   //在执行过其他动画之后再把动画变为idle状态
   initAnimationEvent(){
-    // this.animationComponent.on(Animation.EventType.FINISHED,()=>{
-    //   //拿到动画的名字
-    //   const name = this.animationComponent.defaultClip.name
-    //   const whiteList=['attack']
-    //   if(whiteList.some(v=>name.includes(v))){
-    //     this.node.getComponent(EntityManager).state=ENTITY_STATE_ENUM.IDLE
-    //   }
-    // })
+    this.animationComponent.on(Animation.EventType.FINISHED,()=>{
+      //拿到动画的名字
+      const name = this.animationComponent.defaultClip.name
+      const value = this.getParams(PARAMS_NAME_ENUM.SPIKES_TOTAL_COUNT)
+      if(
+        (value ===SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM.SPIKES_ONE &&name.includes("/spikesone/two")) ||
+        (value ===SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM.SPIKES_TWO &&name.includes("/spikestwo/three"))||
+        (value ===SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM.SPIKES_THREE &&name.includes("/spikesthree/four"))||
+        (value ===SPIKES_TYPE_MAP_TOTAL_COUNT_ENUM.SPIKES_FOUR &&name.includes("/spikesfour/five"))
+      ){
+        this.node.getComponent(SpikesManager).backZero()
+      }
+
+      // const whiteList=['attack']
+      // if(whiteList.some(v=>name.includes(v))){
+      //   this.node.getComponent(EntityManager).state=ENTITY_STATE_ENUM.IDLE
+      // }
+    })
   }
 
   //当参数改变时执行run方法
