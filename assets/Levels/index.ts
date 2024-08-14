@@ -29,6 +29,11 @@ export interface ITile{
 export interface ILevel{
   //关卡的二维数组，写成泛型
   mapInfo:Array<Array<ITile>>
+  player:IEntity,
+  enemies:IEntity[],
+  spikes:ISpikes[],
+  bursts:IEntity[],
+  door:IEntity,
 }
 
 

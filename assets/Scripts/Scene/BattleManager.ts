@@ -23,6 +23,8 @@ export class BattleManager extends Component {
 
 
     onLoad(){
+        //想加载哪一关改这一行就行了
+        DataManager.Instance.levelIndex=1
         //加载时在渲染中添加nextLevel方法
         EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL,this.nextLevel,this)
     }
@@ -89,86 +91,70 @@ export class BattleManager extends Component {
         player.setParent(this.stage)
         const playerManager=player.addComponent(PlayerManager)
         //玩家初始化位置
-        await playerManager.init({
-            x:2,
-            y:8,
-            type:ENTITY_TYPE_ENUM.PLAYER,
-            direction:DIRECTION_ENUM.TOP,
-            state:ENTITY_STATE_ENUM.IDLE,
-        })
+        await playerManager.init(this.level.player)
         DataManager.Instance.player=playerManager
         //当玩家生成是调用玩家出生事件
         EventManager.Instance.emit(EVENT_ENUM.PLAYER_BORN,true)
     }
     //加载敌人
     async generateEnemies(){
-        const enemy1= createUINode()
-        enemy1.setParent(this.stage)
-        const woodenSkeletonManager=enemy1.addComponent(WoodenSkeletonManager)
-        await woodenSkeletonManager.init({
-            x:2,
-            y:5,
-            type:ENTITY_TYPE_ENUM.SKELETON_WOODEN,
-            direction:DIRECTION_ENUM.TOP,
-            state:ENTITY_STATE_ENUM.IDLE,
-           })
-        DataManager.Instance.enemies.push(woodenSkeletonManager)
+        const promise=[]
+        //遍历敌人数组
+        for(let i=0;i<this.level.enemies.length;i++){
+            const enemy=this.level.enemies[i]
+            const node= createUINode()
+            node.setParent(this.stage)
+            //根据敌人的类型来创建不同的敌人
+            const Manager=enemy.type===ENTITY_TYPE_ENUM.SKELETON_WOODEN? WoodenSkeletonManager:IronSkeletonManager
+            const manager=node.addComponent(Manager)
+            promise.push(manager.init(enemy))
+            DataManager.Instance.enemies.push(manager)
 
-        const enemy2= createUINode()
-        enemy2.setParent(this.stage)
-        const ironSkeletonManager=enemy2.addComponent(IronSkeletonManager)
-        await ironSkeletonManager.init({
-            x:7,
-            y:6,
-            type:ENTITY_TYPE_ENUM.SKELETON_IRON,
-            direction:DIRECTION_ENUM.TOP,
-            state:ENTITY_STATE_ENUM.IDLE,
-           })
-        DataManager.Instance.enemies.push(ironSkeletonManager)
+        }
+        await Promise.all(promise)
 
     }
 
     //加载门
     async generateDoor(){
-        const door= createUINode()
-        door.setParent(this.stage)
-        const doorManager=door.addComponent(DoorManager)
-        await doorManager.init({
-            x:7,
-            y:8,
-            type:ENTITY_TYPE_ENUM.DOOR,
-            direction:DIRECTION_ENUM.TOP,
-            state:ENTITY_STATE_ENUM.IDLE,
-           })
+        const player= createUINode()
+        player.setParent(this.stage)
+        const doorManager=player.addComponent(DoorManager)
+        await doorManager.init(this.level.door)
         DataManager.Instance.door=doorManager
     }
 
     //加载地裂砖块
     async generateBurst(){
-        const burst= createUINode()
-        burst.setParent(this.stage)
-        const burstManager=burst.addComponent(BurstManager)
-        await burstManager.init({
-            x:2,
-            y:6,
-            type:ENTITY_TYPE_ENUM.BURST,
-            direction:DIRECTION_ENUM.TOP,
-            state:ENTITY_STATE_ENUM.IDLE,
-           })
-        DataManager.Instance.bursts.push(burstManager)
+        const promise=[]
+        //遍历敌人数组
+        for(let i=0;i<this.level.bursts.length;i++){
+            const burst=this.level.bursts[i]
+            const node= createUINode()
+            node.setParent(this.stage)
+            const burstManager=node.addComponent(BurstManager)
+            promise.push(burstManager.init(burst))
+            DataManager.Instance.bursts.push(burstManager)
+
+        }
+        await Promise.all(promise)
+
     }
     //加载地刺
     async generateSpikes(){
-        const spikes= createUINode()
-        spikes.setParent(this.stage)
-        const spikesManager=spikes.addComponent(SpikesManager)
-        await spikesManager.init({
-            x:1,
-            y:6,
-            type:ENTITY_TYPE_ENUM.SPIKES_FOUR,
-            count:0,
-           })
-        DataManager.Instance.spikes.push(spikesManager)
+
+        const promise=[]
+        //遍历敌人数组
+        for(let i=0;i<this.level.spikes.length;i++){
+            const spike=this.level.spikes[i]
+            const node= createUINode()
+            node.setParent(this.stage)
+            const spikesManager=node.addComponent(SpikesManager)
+            promise.push(spikesManager.init(spike))
+            DataManager.Instance.spikes.push(spikesManager)
+
+        }
+        await Promise.all(promise)
     }
 
     //适配屏幕的方法
