@@ -28,11 +28,10 @@ export class BattleManager extends Component {
         //加载时在渲染中添加nextLevel方法
         EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL,this.nextLevel,this)
         EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.checkArrived,this)
-
     }
     onDestroy(){
-         //加载时在渲染中添加nextLevel方法
-         EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL,this.nextLevel)
+        EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL,this.nextLevel)
+        EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END,this.checkArrived)
     }
 
     start() {
@@ -42,7 +41,10 @@ export class BattleManager extends Component {
     }
 
     initLevel(){
-        const level = levels[`Level${DataManager.Instance.levelIndex}`]
+        console.log(DataManager.Instance.levelIndex)
+        const level = levels[`level${DataManager.Instance.levelIndex}`]
+
+        console.log("加载关卡",level)
         if(level){
             //加载地图前先清空上个地图的信息
             this.clearLevel()
@@ -51,17 +53,21 @@ export class BattleManager extends Component {
             DataManager.Instance.mapInfo=this.level.mapInfo
             DataManager.Instance.mapRowCount=this.level.mapInfo.length ||0
             DataManager.Instance.mapColCount=this.level.mapInfo[0].length ||0
+
             this.generateTileMap()
             this.generateBurst()
             this.generateEnemies()
             this.generateDoor()
             this.generateSpikes()
             this.generatePlayer()
+
+
         }
     }
     //下一关
     nextLevel(){
         DataManager.Instance.levelIndex++
+        console.log("下一关",DataManager.Instance.levelIndex)
         //重新调用加载地图方法
         this.initLevel()
     }
@@ -163,10 +169,8 @@ export class BattleManager extends Component {
     checkArrived(){
         const {x:playerX,y:playerY}=DataManager.Instance.player
         const {x:doorX,y:doorY,state:doorState}=DataManager.Instance.door
-        console.log(playerX,playerY,doorX,doorY,doorState)
         if(playerX===doorX&&playerY===doorY&&doorState===ENTITY_STATE_ENUM.DEATH){
             EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL)
-            console.log("下一关")
         }
 
     }

@@ -37,7 +37,7 @@ export class PlayerManager extends EntityManager {
         // this.direction=DIRECTION_ENUM.TOP
 
         //数据ui分离后只需要修改状态即可setParams
-        this.state=ENTITY_STATE_ENUM.IDLE
+        // this.state=ENTITY_STATE_ENUM.IDLE
 
         //使用状态机就不需要渲染了
         // await this.render()
@@ -842,8 +842,8 @@ export class PlayerManager extends EntityManager {
                     this.state=ENTITY_STATE_ENUM.BLOCKRIGHT
                     return true
                 }
-                const playerTile=tileInfo[playerNextX][y]
-                const weaponTile=tileInfo[weaponNextX][y]
+                const playerTile=tileInfo[playerNextX]?.[y]
+                const weaponTile=tileInfo[weaponNextX]?.[y]
 
                 if(((playerNextX===doorX&&y===doorY)||(weaponNextX===doorX&&y===doorY))&&
                 doorState!==ENTITY_STATE_ENUM.DEATH
