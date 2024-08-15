@@ -5,7 +5,7 @@ import { StateMachine } from "./StateMachine";
 import { sortSpriteFrame } from "../Utils";
 
 //帧数常量 1秒8帧
-const ANIMATION_SPEED=1/8
+export const ANIMATION_SPEED=1/8
 
 /**
  * 每个状态都要有播放动画的能力，
@@ -21,7 +21,9 @@ export default class State {
     //动画播放路径
     private path:string,
     //不传参数就默认播放一次
-    private wrapMode:AnimationClip.WrapMode=AnimationClip.WrapMode.Normal
+    private wrapMode:AnimationClip.WrapMode=AnimationClip.WrapMode.Normal,
+    //动画速度
+    private speed:number=ANIMATION_SPEED,
   ){
     this.init()
   }
@@ -43,7 +45,7 @@ export default class State {
         //map方法会遍历数组中的每个元素，并对每个元素执行提供的函数。
         //回调函数中的参数顺序是固定的：第一个参数是当前元素，第二个参数是当前元素的索引（如果提供了第二个参数的话）
 
-        const frames:Array<[number,SpriteFrame]> =sortSpriteFrame(spriteFrames).map((item,index)=>[ANIMATION_SPEED*index,item])
+        const frames:Array<[number,SpriteFrame]> =sortSpriteFrame(spriteFrames).map((item,index)=>[this.speed*index,item])
 
         track.channel.curve.assignSorted(frames);
 
@@ -52,7 +54,7 @@ export default class State {
         //设置动画剪辑的名称，this.path肯定是不同的，所以可以用this.path来命名，在
         this.animationClip.name = this.path;
         // 整个动画剪辑的周期
-        this.animationClip.duration =frames.length*ANIMATION_SPEED;
+        this.animationClip.duration =frames.length*this.speed;
         //循环播放,改成自定义的wrapMode
         this.animationClip.wrapMode=this.wrapMode
   }

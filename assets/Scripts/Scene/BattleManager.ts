@@ -13,6 +13,7 @@ import { DoorManager } from '../Door/DoorManager';
 import { IronSkeletonManager } from '../IronSkeleton/IronSkeletonManager';
 import { BurstManager } from '../Burst/BurstManager';
 import { SpikesManager } from '../Spikes/SpikesManager';
+import { SmokeManager } from '../Smoke/SmokeManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')
@@ -21,17 +22,20 @@ export class BattleManager extends Component {
     //舞台节点
     stage:Node
 
-
+    private smokeLayer:Node
     onLoad(){
         //想加载哪一关改这一行就行了
         DataManager.Instance.levelIndex=1
         //加载时在渲染中添加nextLevel方法
         EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL,this.nextLevel,this)
         EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.checkArrived,this)
+        //加载烟幕
+        EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE,this.generateSmoke,this)
     }
     onDestroy(){
         EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL,this.nextLevel)
         EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END,this.checkArrived)
+        EventManager.Instance.off(EVENT_ENUM.SHOW_SMOKE,this.generateSmoke)
     }
 
     start() {
@@ -59,6 +63,8 @@ export class BattleManager extends Component {
             this.generateEnemies()
             this.generateDoor()
             this.generateSpikes()
+            //把烟雾预先加载不让烟雾图层在玩家之上
+            this.generateSmokeLayer()
             this.generatePlayer()
 
 
@@ -67,7 +73,6 @@ export class BattleManager extends Component {
     //下一关
     nextLevel(){
         DataManager.Instance.levelIndex++
-        console.log("下一关",DataManager.Instance.levelIndex)
         //重新调用加载地图方法
         this.initLevel()
     }
@@ -100,6 +105,7 @@ export class BattleManager extends Component {
         const playerManager=player.addComponent(PlayerManager)
         //玩家初始化位置
         await playerManager.init(this.level.player)
+        //把玩家信息放到数据中心
         DataManager.Instance.player=playerManager
         //当玩家生成是调用玩家出生事件
         EventManager.Instance.emit(EVENT_ENUM.PLAYER_BORN,true)
@@ -165,8 +171,42 @@ export class BattleManager extends Component {
         await Promise.all(promise)
     }
 
+    async generateSmoke(x:number,y:number,direction:DIRECTION_ENUM){
+        //因为烟雾init会一直创建节点，为了节约资源可以从已有数组中找到死掉的烟雾，如果找不到就创建新的
+        const item = DataManager.Instance.smokes.find(smoke=>smoke.state===ENTITY_STATE_ENUM.DEATH)
+        if(item){
+            console.log("复活赛打赢了")
+            item.x=x
+            item.y=y
+            item.direction=direction
+            item.state=ENTITY_STATE_ENUM.IDLE
+            this.node.setPosition(x*TILE_WIDTH-TILE_WIDTH*1.5,-y*TILE_HEIGHT+TILE_HEIGHT*1.5)
+        }else{
+        const smoke= createUINode()
+        smoke.setParent(this.smokeLayer)
+        const smokeManager=smoke.addComponent(SmokeManager)
+        await smokeManager.init({
+            x,
+            y,
+            direction,
+            state:ENTITY_STATE_ENUM.IDLE,
+            type:ENTITY_TYPE_ENUM.SMOKE
+        })
+        DataManager.Instance.smokes.push(smokeManager)
+        console.log('smokeManager',smokeManager)
+        }
+    }
+    generateSmokeLayer(){
+        //生成烟雾时把父节点设置为smokeLayer这样就人物就能盖住烟雾
+        this.smokeLayer= createUINode()
+        this.smokeLayer.setParent(this.stage)
+    }
+
     //检测玩家是否到达门的位置
     checkArrived(){
+        if(!DataManager.Instance.player||!DataManager.Instance.door) {
+            return
+        }
         const {x:playerX,y:playerY}=DataManager.Instance.player
         const {x:doorX,y:doorY,state:doorState}=DataManager.Instance.door
         if(playerX===doorX&&playerY===doorY&&doorState===ENTITY_STATE_ENUM.DEATH){

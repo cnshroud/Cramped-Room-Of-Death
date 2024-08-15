@@ -47,6 +47,7 @@ export class PlayerManager extends EntityManager {
 
     };
     onDestroy() {
+        super.onDestroy()
         EventManager.Instance.off(EVENT_ENUM.PLAYER_CTRL,this.inputHandle)
         EventManager.Instance.off(EVENT_ENUM.ATTACK_PLAYER,this.onDead)
     }
@@ -117,15 +118,20 @@ export class PlayerManager extends EntityManager {
         if(inputDirection===CONTROLLER_ENUM.TOP){
             this.targetY-=1
             this.isMoving=true
+            //人物移动时触发烟雾
+            this.showSmoke(DIRECTION_ENUM.TOP)
         }else if(inputDirection===CONTROLLER_ENUM.BOTTOM){
             this.targetY+=1
             this.isMoving=true
+            this.showSmoke(DIRECTION_ENUM.BOTTOM)
         }else if(inputDirection===CONTROLLER_ENUM.RIGHT){
             this.targetX+=1
             this.isMoving=true
+            this.showSmoke(DIRECTION_ENUM.RIGHT)
         }else if(inputDirection===CONTROLLER_ENUM.LEFT){
             this.targetX-=1
             this.isMoving=true
+            this.showSmoke(DIRECTION_ENUM.LEFT)
         }else if(inputDirection===CONTROLLER_ENUM.TURNLEFT){
             //先改变数据在调用渲染方法
             //当点击左转时，如果角色面向上时，会转为面向左边
@@ -155,6 +161,13 @@ export class PlayerManager extends EntityManager {
             EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
           }
     }
+    //展示烟雾
+    showSmoke(type:DIRECTION_ENUM){
+        //绑定事件
+        console.log('showSmoke',type)
+        EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE,this.x,this.y,type)
+    }
+
     //攻击判断
     willAttack(type:CONTROLLER_ENUM){
         //拿到所有没死的敌人位置，看玩家面向的方向继续往前走会不会碰到敌人
