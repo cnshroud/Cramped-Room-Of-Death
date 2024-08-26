@@ -164,7 +164,6 @@ export class PlayerManager extends EntityManager {
     //展示烟雾
     showSmoke(type:DIRECTION_ENUM){
         //绑定事件
-        console.log('showSmoke',type)
         EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE,this.x,this.y,type)
     }
 

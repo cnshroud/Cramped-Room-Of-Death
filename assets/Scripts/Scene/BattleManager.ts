@@ -14,6 +14,7 @@ import { IronSkeletonManager } from '../IronSkeleton/IronSkeletonManager';
 import { BurstManager } from '../Burst/BurstManager';
 import { SpikesManager } from '../Spikes/SpikesManager';
 import { SmokeManager } from '../Smoke/SmokeManager';
+import { FaderManager } from '../../Runtime/FaderManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')
@@ -44,12 +45,19 @@ export class BattleManager extends Component {
 
     }
 
-    initLevel(){
-        console.log(DataManager.Instance.levelIndex)
+    async initLevel(){
         const level = levels[`level${DataManager.Instance.levelIndex}`]
 
         console.log("加载关卡",level)
         if(level){
+            //加入渐入渐出动画
+            // if(this.hasInited){
+
+                await FaderManager.Instance.fadeIn()
+             // }else{
+            // await FaderManager.Instance.mask()
+            // }
+            console.log("渐入渐出动画")
             //加载地图前先清空上个地图的信息
             this.clearLevel()
             //加载地图
@@ -57,16 +65,18 @@ export class BattleManager extends Component {
             DataManager.Instance.mapInfo=this.level.mapInfo
             DataManager.Instance.mapRowCount=this.level.mapInfo.length ||0
             DataManager.Instance.mapColCount=this.level.mapInfo[0].length ||0
-
-            this.generateTileMap()
-            this.generateBurst()
-            this.generateEnemies()
-            this.generateDoor()
-            this.generateSpikes()
-            //把烟雾预先加载不让烟雾图层在玩家之上
-            this.generateSmokeLayer()
-            this.generatePlayer()
-
+            // 等待资源加载完才会执行下面的fadeout方法
+            await Promise.all([
+                this.generateTileMap(),
+                this.generateBurst(),
+                this.generateEnemies(),
+                this.generateDoor(),
+                this.generateSpikes(),
+                //把烟雾预先加载不让烟雾图层在玩家之上
+                this.generateSmokeLayer(),
+            ])
+            await this.generatePlayer(),
+            await FaderManager.Instance.fadeOut()
 
         }
     }
@@ -175,7 +185,6 @@ export class BattleManager extends Component {
         //因为烟雾init会一直创建节点，为了节约资源可以从已有数组中找到死掉的烟雾，如果找不到就创建新的
         const item = DataManager.Instance.smokes.find(smoke=>smoke.state===ENTITY_STATE_ENUM.DEATH)
         if(item){
-            console.log("复活赛打赢了")
             item.x=x
             item.y=y
             item.direction=direction
@@ -193,10 +202,9 @@ export class BattleManager extends Component {
             type:ENTITY_TYPE_ENUM.SMOKE
         })
         DataManager.Instance.smokes.push(smokeManager)
-        console.log('smokeManager',smokeManager)
         }
     }
-    generateSmokeLayer(){
+    async generateSmokeLayer(){
         //生成烟雾时把父节点设置为smokeLayer这样就人物就能盖住烟雾
         this.smokeLayer= createUINode()
         this.smokeLayer.setParent(this.stage)

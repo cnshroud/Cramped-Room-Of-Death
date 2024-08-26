@@ -1,7 +1,7 @@
 
 import { _decorator, Component, Node } from 'cc';
 import { EventManager } from '../../Runtime/EventManager';
-import { CONTORLLER_ENUM, EVENT_ENUM } from '../../Enum';
+import { CONTROLLER_ENUM, EVENT_ENUM } from '../../Enum';
 const { ccclass, property } = _decorator;
 /**
  *
@@ -13,7 +13,7 @@ export class ControllerManager extends Component {
     handleCtrl(evt:Event,type:string){
         // EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL)
         //将button事件的返回字符拿到，强转为CONTORLLER_ENUM
-        EventManager.Instance.emit(EVENT_ENUM.PLAYER_CTRL,type as CONTORLLER_ENUM)
+        EventManager.Instance.emit(EVENT_ENUM.PLAYER_CTRL,type as CONTROLLER_ENUM)
 
     }
 }
