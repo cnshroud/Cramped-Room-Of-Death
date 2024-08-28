@@ -31,7 +31,6 @@ export class DrawManager extends Component {
 
   //加载Graphics组件
   init() {
-    console.log("屏幕宽高",SCREEN_WIDTH,SCREEN_HEIGHT)
     this.block = this.addComponent(BlockInputEvents)
     this.ctx = this.addComponent(Graphics)
     //设置节点属性
@@ -46,6 +45,7 @@ export class DrawManager extends Component {
     this.ctx.rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
     this.ctx.fillColor = new Color(0, 0, 0, 255 * percent)
     this.ctx.fill()
+    //如果percent为1，则启用block组件拦截节点接受输入事件，否则禁用
     this.block.enabled = percent === 1
   }
   //随时间改变透明度
@@ -80,8 +80,8 @@ export class DrawManager extends Component {
     this.duration = duration
     this.oldTime = game.totalTime
     this.fadeStatus = FadeStatus.FADE_IN
-    console.log("设置Graphics父节点的位置，父节点的父节点",this.node.getParent(),this.node.getParent().getPosition())
-    console.log("Graphics的位置",this.node,this.node.getPosition())
+    // console.log("设置Graphics父节点的位置，父节点的父节点",this.node.getParent(),this.node.getParent().getPosition())
+    // console.log("Graphics的位置",this.node,this.node.getPosition())
     return new Promise(resolve => {
       this.fadeResolve = resolve
     })

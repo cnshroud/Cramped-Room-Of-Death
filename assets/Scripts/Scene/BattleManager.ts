@@ -3,7 +3,6 @@ import { _decorator, Component, Node } from 'cc';
 import { TileMapManager } from '../Tile/TileMapManager';
 import { createUINode } from '../../Utils';
 import levels, { ILevel } from '../../Levels';
-import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 import { DataManager } from '../../Runtime/DataManager';
 import { EventManager } from '../../Runtime/EventManager';
 import { DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM } from '../../Enum';
@@ -15,6 +14,7 @@ import { BurstManager } from '../Burst/BurstManager';
 import { SpikesManager } from '../Spikes/SpikesManager';
 import { SmokeManager } from '../Smoke/SmokeManager';
 import { FaderManager } from '../../Runtime/FaderManager';
+import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')

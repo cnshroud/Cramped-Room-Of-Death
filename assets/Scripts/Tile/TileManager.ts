@@ -20,7 +20,7 @@ import { TILE_TYPE_ENUM } from '../../Enum';
 export const TILE_WIDTH=55
 export const TILE_HEIGHT=55
 
-
+//瓦片管理类，用于把瓦片拼接成瓦片地图
 @ccclass('TileManager')
 export class TileManager extends Component {
   //墙壁类型

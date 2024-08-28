@@ -8,14 +8,14 @@ import { ResourceManager } from '../../Runtime/ResourceManager';
 
 
 
-//图片宽高
-export const TILE_WIDTH=55
-export const TILE_HEIGHT=55
+// //图片宽高
+// export const TILE_WIDTH=55
+// export const TILE_HEIGHT=55
 
 
 @ccclass('TileMapManager')
 export class TileMapManager extends Component {
-    //瓦片地图动态生成，
+    //显示瓦片地图
   async init(){
     //
      const spriteFrames = await ResourceManager.Instance.loadDir("texture/tile/tile")

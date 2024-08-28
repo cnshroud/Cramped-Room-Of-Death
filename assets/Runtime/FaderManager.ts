@@ -24,6 +24,7 @@ export class FaderManager extends Singleton{
     this._fader.init()
     //设置常驻节点
     game.addPersistRootNode(root)
+    root.setPosition(0,0)
     console.log("root节点的位置",root,root.getPosition())
     return this._fader
   }
