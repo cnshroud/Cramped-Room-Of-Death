@@ -80,6 +80,8 @@ export class DrawManager extends Component {
     this.duration = duration
     this.oldTime = game.totalTime
     this.fadeStatus = FadeStatus.FADE_IN
+    console.log("设置Graphics父节点的位置，父节点的父节点",this.node.getParent(),this.node.getParent().getPosition())
+    console.log("Graphics的位置",this.node,this.node.getPosition())
     return new Promise(resolve => {
       this.fadeResolve = resolve
     })

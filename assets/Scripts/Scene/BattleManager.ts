@@ -69,11 +69,11 @@ export class BattleManager extends Component {
             await Promise.all([
                 this.generateTileMap(),
                 this.generateBurst(),
-                this.generateEnemies(),
-                this.generateDoor(),
                 this.generateSpikes(),
                 //把烟雾预先加载不让烟雾图层在玩家之上
                 this.generateSmokeLayer(),
+                this.generateEnemies(),
+                this.generateDoor(),
             ])
             await this.generatePlayer(),
             await FaderManager.Instance.fadeOut()
@@ -99,15 +99,25 @@ export class BattleManager extends Component {
         this.stage = createUINode()
         this.stage.setParent(this.node)
     }
-
+    //生成地图
     async generateTileMap() {
         //这个游戏有大部分东西都要放到一个对象上的，例如瓦片和人
         const tileMap= createUINode()
-        await tileMap.setParent(this.stage)
+        tileMap.setParent(this.stage)
         const titleMapManager=tileMap.addComponent(TileMapManager)
-        titleMapManager.init()
+        await titleMapManager.init()
         this.adaptPos()
     }
+    //适配屏幕的方法
+    adaptPos(){
+        const{mapColCount,mapRowCount}=DataManager.Instance
+        const disx= TILE_WIDTH*mapRowCount/2
+        const disy= TILE_HEIGHT*mapColCount/2+80
+        //思路：地图的左上角是他的原点，只要让地图偏移到地图的一半即可
+        //获取地图大小
+        this.stage.setPosition(-disx,disy)
+    }
+
     //加载玩家
     async generatePlayer(){
         const player= createUINode()
@@ -223,15 +233,7 @@ export class BattleManager extends Component {
 
     }
 
-    //适配屏幕的方法
-    adaptPos(){
-        const{mapColCount,mapRowCount}=DataManager.Instance
-        const disx= TILE_WIDTH*mapRowCount/2
-        const disy= TILE_HEIGHT*mapColCount/2+80
-        //思路：地图的左上角是他的原点，只要让地图偏移到地图的一半即可
-        //获取地图大小
-        this.stage.setPosition(-disx,disy)
-    }
+
 
 
 }

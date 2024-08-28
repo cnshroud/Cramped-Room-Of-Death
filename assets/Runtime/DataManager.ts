@@ -7,7 +7,6 @@ import { PlayerManager } from "../Scripts/Player/PlayerManager";
 import { SmokeManager } from "../Scripts/Smoke/SmokeManager";
 import { SpikesManager } from "../Scripts/Spikes/SpikesManager";
 import { TileManager } from "../Scripts/Tile/TileManager";
-import { WoodenSkeletonManager } from "../Scripts/WoodenSkeleton/WoodenSkeletonManager";
 
 export class DataManager extends Singleton{
   //用get的好处不用.GetInstance()，直接.GetInstance就行了
