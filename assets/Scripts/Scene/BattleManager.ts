@@ -15,6 +15,7 @@ import { SpikesManager } from '../Spikes/SpikesManager';
 import { SmokeManager } from '../Smoke/SmokeManager';
 import { FaderManager } from '../../Runtime/FaderManager';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
+import { StakeManager } from '../UI/StakeManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BattleManager')
@@ -96,8 +97,11 @@ export class BattleManager extends Component {
 
     }
     generateStage(){
+        console.log("生成舞台")
         this.stage = createUINode()
         this.stage.setParent(this.node)
+        //震动效果
+        this.stage.addComponent(StakeManager)
     }
     //生成地图
     async generateTileMap() {
@@ -113,6 +117,8 @@ export class BattleManager extends Component {
         const{mapColCount,mapRowCount}=DataManager.Instance
         const disx= TILE_WIDTH*mapRowCount/2
         const disy= TILE_HEIGHT*mapColCount/2+80
+        //适配屏幕的时候让震动停止
+        this.stage.getComponent(StakeManager).stop()
         //思路：地图的左上角是他的原点，只要让地图偏移到地图的一半即可
         //获取地图大小
         this.stage.setPosition(-disx,disy)

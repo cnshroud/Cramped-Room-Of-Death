@@ -107,7 +107,8 @@ export class PlayerManager extends EntityManager {
         }
         //判断是否撞上了
         if(this.willBlock(inputDirection)){
-            console.log("撞上了")
+            console.log("撞上了,执行震动")
+            EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE)
             return
         }
         this.move(inputDirection)
