@@ -1,6 +1,6 @@
 
 import { _decorator,} from 'cc';
-import { CONTROLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM } from '../../Enum';
+import { CONTROLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM } from '../../Enum';
 import { EventManager } from '../../Runtime/EventManager';
 import { PlayerStateMachine } from './PlayerStateMachine';
 import { EntityManager } from '../../Base/EntityManager';
@@ -108,7 +108,37 @@ export class PlayerManager extends EntityManager {
         //判断是否撞上了
         if(this.willBlock(inputDirection)){
             console.log("撞上了,执行震动")
-            EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE)
+            //根据撞上的方向触发震动，旋转也是
+            if(inputDirection===CONTROLLER_ENUM.TOP){
+                EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.TOP)
+            }else if(inputDirection===CONTROLLER_ENUM.BOTTOM){
+                EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.BOTTOM)
+            }else if(inputDirection===CONTROLLER_ENUM.RIGHT){
+                EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.RIGHT)
+            }else if(inputDirection===CONTROLLER_ENUM.LEFT){
+                EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.LEFT)
+            }else if(inputDirection===CONTROLLER_ENUM.TURNLEFT){
+                //当玩家旋转时，根据转向的方向触发震动
+                if(this.direction===DIRECTION_ENUM.TOP){
+                    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.LEFT)
+                }else if(this.direction===DIRECTION_ENUM.LEFT){
+                    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.BOTTOM)
+                }else if(this.direction===DIRECTION_ENUM.BOTTOM){
+                    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.RIGHT)
+                }else if(this.direction===DIRECTION_ENUM.RIGHT){
+                    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.TOP)
+                }
+            }else if(inputDirection===CONTROLLER_ENUM.TURNRIGHT){
+                if(this.direction===DIRECTION_ENUM.TOP){
+                    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.RIGHT)
+                }else if(this.direction===DIRECTION_ENUM.RIGHT){
+                    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.BOTTOM)
+                }else if(this.direction===DIRECTION_ENUM.BOTTOM){
+                    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.LEFT)
+                }else if(this.direction===DIRECTION_ENUM.LEFT){
+                    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,SHAKE_TYPE_ENUM.TOP)
+                }
+            }
             return
         }
         this.move(inputDirection)
