@@ -105,8 +105,12 @@ export class PlayerManager extends EntityManager {
         //判断是否将要攻击
         const id = this.willAttack(inputDirection)
         if(id){
+            //记录按下按钮之前的数据
+            EventManager.Instance.emit(EVENT_ENUM.RECODE_STEP)
+            this.state=ENTITY_STATE_ENUM.ATTACK
             EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY,id)
             EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN)
+            EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END)
             return
         }
         //判断是否撞上了
@@ -150,6 +154,8 @@ export class PlayerManager extends EntityManager {
     }
     //人物移动
     move(inputDirection:CONTROLLER_ENUM){
+        //移动前记录数据
+        EventManager.Instance.emit(EVENT_ENUM.RECODE_STEP)
         if(inputDirection===CONTROLLER_ENUM.TOP){
             this.targetY-=1
             this.isMoving=true

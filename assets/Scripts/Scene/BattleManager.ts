@@ -33,11 +33,18 @@ export class BattleManager extends Component {
         EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END,this.checkArrived,this)
         //加载烟幕
         EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE,this.generateSmoke,this)
+        //加载记录步数
+        EventManager.Instance.on(EVENT_ENUM.RECODE_STEP,this.record,this)
+        //加载撤销步数
+        EventManager.Instance.on(EVENT_ENUM.REVOKE_STEP,this.revoke,this)
+
     }
     onDestroy(){
         EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL,this.nextLevel)
         EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END,this.checkArrived)
         EventManager.Instance.off(EVENT_ENUM.SHOW_SMOKE,this.generateSmoke)
+        EventManager.Instance.off(EVENT_ENUM.RECODE_STEP,this.record)
+        EventManager.Instance.off(EVENT_ENUM.REVOKE_STEP,this.revoke)
     }
 
     start() {
@@ -246,7 +253,12 @@ export class BattleManager extends Component {
                 x:DataManager.Instance.player.x,
                 y:DataManager.Instance.player.y,
                 direction:DataManager.Instance.player.direction,
-                state:DataManager.Instance.player.state,
+                state:
+                    DataManager.Instance.player.state===ENTITY_STATE_ENUM.IDLE||
+                    DataManager.Instance.player.state===ENTITY_STATE_ENUM.DEATH||
+                    DataManager.Instance.player.state===ENTITY_STATE_ENUM.AIRDEATH
+                        ?DataManager.Instance.player.state
+                        :ENTITY_STATE_ENUM.IDLE,
                 type:DataManager.Instance.player.type,
             },
             door:{
