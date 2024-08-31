@@ -16,12 +16,13 @@ export class EntityManager extends Component {
     y:number=0
     //状态机变量
     fsm:StateMachine
+    //实体类型
+    type:ENTITY_TYPE_ENUM
     //方位变量
     private _direction:DIRECTION_ENUM
     //实体状态
     private _state:ENTITY_STATE_ENUM
-    //实体类型
-    private type:ENTITY_TYPE_ENUM
+
 
     //实体的id，唯一标识,12位长度
     id: string=randomByLen(12);

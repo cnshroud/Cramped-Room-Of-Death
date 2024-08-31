@@ -3,7 +3,7 @@ import { _decorator, Component, Node } from 'cc';
 import { TileMapManager } from '../Tile/TileMapManager';
 import { createUINode } from '../../Utils';
 import levels, { ILevel } from '../../Levels';
-import { DataManager } from '../../Runtime/DataManager';
+import { DataManager, IRecord } from '../../Runtime/DataManager';
 import { EventManager } from '../../Runtime/EventManager';
 import { DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM } from '../../Enum';
 import { PlayerManager } from '../Player/PlayerManager';
@@ -239,7 +239,87 @@ export class BattleManager extends Component {
 
     }
 
+    record(){
+        //保存场景数据
+        const item :IRecord={
+            player:{
+                x:DataManager.Instance.player.x,
+                y:DataManager.Instance.player.y,
+                direction:DataManager.Instance.player.direction,
+                state:DataManager.Instance.player.state,
+                type:DataManager.Instance.player.type,
+            },
+            door:{
+                x:DataManager.Instance.door.x,
+                y:DataManager.Instance.door.y,
+                direction:DataManager.Instance.door.direction,
+                state:DataManager.Instance.door.state,
+                type:DataManager.Instance.door.type,
+            },
+            enemies:DataManager.Instance.enemies.map(({x,y,direction,state,type})=>({
+                x,
+                y,
+                direction,
+                state,
+                type,
+            })),
+            bursts:DataManager.Instance.bursts.map(({x,y,direction,state,type})=>({
+                x,
+                y,
+                direction,
+                state,
+                type,
+            })),
+            spikes:DataManager.Instance.spikes.map(({x,y,count,type})=>({
+                x,
+                y,
+                count,
+                type,
+            }))
+        }
+        //datamanager保存数据
+        DataManager.Instance.records.push(item)
+    }
 
+    //数据撤回
+    revoke(){
+        const item = DataManager.Instance.records.pop()
+        if(item){
+            DataManager.Instance.player.x=DataManager.Instance.player.targetX=item.player.x
+            DataManager.Instance.player.y=DataManager.Instance.player.targetY=item.player.y
+            DataManager.Instance.player.direction=item.player.direction
+            DataManager.Instance.player.state=item.player.state
 
+            DataManager.Instance.door.x=item.door.x
+            DataManager.Instance.door.y=item.door.y
+            DataManager.Instance.door.direction=item.door.direction
+            DataManager.Instance.door.state=item.door.state
+
+            //遍历敌人数组
+            for (let index = 0; index < DataManager.Instance.enemies.length; index++) {
+                const enemy = item.enemies[index];
+                DataManager.Instance.enemies[index].x=enemy.x
+                DataManager.Instance.enemies[index].y=enemy.y
+                DataManager.Instance.enemies[index].direction=enemy.direction
+                DataManager.Instance.enemies[index].state=enemy.state
+            }
+
+            for (let index = 0; index < DataManager.Instance.bursts.length; index++) {
+                const burst = item.bursts[index];
+                DataManager.Instance.bursts[index].x=burst.x
+                DataManager.Instance.bursts[index].y=burst.y
+                DataManager.Instance.bursts[index].direction=burst.direction
+                DataManager.Instance.bursts[index].state=burst.state
+            }
+
+            for (let index = 0; index < DataManager.Instance.spikes.length; index++) {
+                const spike = item.spikes[index];
+                DataManager.Instance.spikes[index].x=spike.x
+                DataManager.Instance.spikes[index].y=spike.y
+                DataManager.Instance.spikes[index].count=spike.count
+                DataManager.Instance.spikes[index].type=spike.type
+            }
+        }
+    }
 
 }

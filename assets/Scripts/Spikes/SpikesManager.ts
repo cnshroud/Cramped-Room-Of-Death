@@ -19,7 +19,7 @@ export class SpikesManager extends Component {
     private _count:number
     //总点数
     private _totalCount:number
-    private type:ENTITY_TYPE_ENUM
+    type:ENTITY_TYPE_ENUM
 
     id: string=randomByLen(12);
 

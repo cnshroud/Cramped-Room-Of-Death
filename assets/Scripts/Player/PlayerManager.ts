@@ -83,7 +83,11 @@ export class PlayerManager extends EntityManager {
         console.log(type)
         this.state=type
     }
-
+    //角色攻击时震动
+    onAttackShake(type:SHAKE_TYPE_ENUM){
+        console.log("动了吗",type)
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE,type)
+    }
 
     //人物移动前处理用户输入的方法
     inputHandle(inputDirection:CONTROLLER_ENUM){
