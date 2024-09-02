@@ -41,7 +41,7 @@ export class BattleManager extends Component {
         //加载重新关卡
         EventManager.Instance.on(EVENT_ENUM.RESTART_LEVEL,this.initLevel,this)
         //加载退回主页
-        EventManager.Instance.on(EVENT_ENUM.OUT_BATTLE,this.outBattle,this)
+        EventManager.Instance.on(EVENT_ENUM.OUT_BATTLE,this.quitBattle,this)
 
     }
     onDestroy(){
@@ -51,7 +51,9 @@ export class BattleManager extends Component {
         EventManager.Instance.off(EVENT_ENUM.RECODE_STEP,this.record)
         EventManager.Instance.off(EVENT_ENUM.REVOKE_STEP,this.revoke)
         EventManager.Instance.off(EVENT_ENUM.RESTART_LEVEL,this.initLevel)
-        EventManager.Instance.off(EVENT_ENUM.OUT_BATTLE,this.outBattle)
+        EventManager.Instance.off(EVENT_ENUM.OUT_BATTLE,this.quitBattle)
+
+        EventManager.Instance.clear()
     }
 
     start() {
@@ -74,10 +76,9 @@ export class BattleManager extends Component {
                 //让他一直黑着
                 await FaderManager.Instance.mask()
             }
-            console.log("渐入渐出动画")
             //加载地图前先清空上个地图的信息
             this.clearLevel()
-            //加载地图
+            //生成新关卡数据
             this.level=level
             DataManager.Instance.mapInfo=this.level.mapInfo
             DataManager.Instance.mapRowCount=this.level.mapInfo.length ||0
@@ -97,11 +98,11 @@ export class BattleManager extends Component {
             this.inited=true
 
         }else{
-            this.outBattle()
+            this.quitBattle()
         }
     }
-    async outBattle(){
-        await FaderManager.Instance.fadeIn()
+    quitBattle(){
+        this.node.destroy()
         director.loadScene(SCENE_ENUM.START)
     }
     //下一关

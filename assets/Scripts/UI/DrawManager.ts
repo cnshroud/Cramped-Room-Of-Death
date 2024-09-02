@@ -35,7 +35,7 @@ export class DrawManager extends Component {
     this.ctx = this.addComponent(Graphics)
     //设置节点属性
     const transform = this.getComponent(UITransform)
-    transform.setAnchorPoint(0.5,0.5)
+    transform.setAnchorPoint(0.5, 0.5)
     transform.setContentSize(SCREEN_WIDTH, SCREEN_HEIGHT)
     this.setAlpha(1)
   }
@@ -78,8 +78,8 @@ export class DrawManager extends Component {
   fadeIn(duration: number = DEFAULT_FADE_DURATION) {
     this.setAlpha(0)
     this.duration = duration
-    this.oldTime = game.totalTime
     this.fadeStatus = FadeStatus.FADE_IN
+    this.oldTime = game.totalTime
     // console.log("设置Graphics父节点的位置，父节点的父节点",this.node.getParent(),this.node.getParent().getPosition())
     // console.log("Graphics的位置",this.node,this.node.getPosition())
     return new Promise(resolve => {

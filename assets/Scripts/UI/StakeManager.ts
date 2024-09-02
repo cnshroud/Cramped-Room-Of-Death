@@ -41,7 +41,7 @@ export class StakeManager extends Component {
     //使用sin正弦函数实现震动 Y=A*SIN(W*X+F)  A振幅  W频率  F相位
     if(this.isShaking){
       const duration = 200  //震动持续时间
-      const amount = 16    //振幅
+      const amount = 1.6    //振幅
       const frequency=12
       //获取当前时间
       const curSecond = (game.totalTime-this.oldTime)/1000
