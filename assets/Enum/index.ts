@@ -37,6 +37,8 @@ export enum EVENT_ENUM{
   SCREEN_SHAKE="SCREEN_SHAKE",
   RECODE_STEP="RECODE_STEP",    //记录步数
   REVOKE_STEP="REVOKE_STEP",     //撤销步数
+  RESTART_LEVEL="RESTART_LEVEL",     //撤销步数
+  OUT_BATTLE="OUT_BATTLE",     //撤销步数
 
 }
 
@@ -155,4 +157,11 @@ export enum SHAKE_TYPE_ENUM{
   BOTTOM="BOTTOM",
   LEFT="LEFT",
   RIGHT="RIGHT",
+}
+
+//场景枚举
+export enum SCENE_ENUM{
+  START="Start",
+  BATTLE="Battle",
+  LOADING="Loading",
 }

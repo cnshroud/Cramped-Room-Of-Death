@@ -1,11 +1,11 @@
 
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, director, Node } from 'cc';
 import { TileMapManager } from '../Tile/TileMapManager';
 import { createUINode } from '../../Utils';
 import levels, { ILevel } from '../../Levels';
 import { DataManager, IRecord } from '../../Runtime/DataManager';
 import { EventManager } from '../../Runtime/EventManager';
-import { DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM } from '../../Enum';
+import { DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, SCENE_ENUM } from '../../Enum';
 import { PlayerManager } from '../Player/PlayerManager';
 import { WoodenSkeletonManager } from '../WoodenSkeleton/WoodenSkeletonManager';
 import { DoorManager } from '../Door/DoorManager';
@@ -23,7 +23,8 @@ export class BattleManager extends Component {
     level:ILevel
     //舞台节点
     stage:Node
-
+    //判断渐入渐出动画是否已经加载过
+    private inited=false
     private smokeLayer:Node
     onLoad(){
         //想加载哪一关改这一行就行了
@@ -37,6 +38,10 @@ export class BattleManager extends Component {
         EventManager.Instance.on(EVENT_ENUM.RECODE_STEP,this.record,this)
         //加载撤销步数
         EventManager.Instance.on(EVENT_ENUM.REVOKE_STEP,this.revoke,this)
+        //加载重新关卡
+        EventManager.Instance.on(EVENT_ENUM.RESTART_LEVEL,this.initLevel,this)
+        //加载退回主页
+        EventManager.Instance.on(EVENT_ENUM.OUT_BATTLE,this.outBattle,this)
 
     }
     onDestroy(){
@@ -45,6 +50,8 @@ export class BattleManager extends Component {
         EventManager.Instance.off(EVENT_ENUM.SHOW_SMOKE,this.generateSmoke)
         EventManager.Instance.off(EVENT_ENUM.RECODE_STEP,this.record)
         EventManager.Instance.off(EVENT_ENUM.REVOKE_STEP,this.revoke)
+        EventManager.Instance.off(EVENT_ENUM.RESTART_LEVEL,this.initLevel)
+        EventManager.Instance.off(EVENT_ENUM.OUT_BATTLE,this.outBattle)
     }
 
     start() {
@@ -57,14 +64,16 @@ export class BattleManager extends Component {
         const level = levels[`level${DataManager.Instance.levelIndex}`]
 
         console.log("加载关卡",level)
+
         if(level){
             //加入渐入渐出动画
-            // if(this.hasInited){
+            if(this.inited){
 
                 await FaderManager.Instance.fadeIn()
-             // }else{
-            // await FaderManager.Instance.mask()
-            // }
+             }else{
+                //让他一直黑着
+                await FaderManager.Instance.mask()
+            }
             console.log("渐入渐出动画")
             //加载地图前先清空上个地图的信息
             this.clearLevel()
@@ -85,8 +94,15 @@ export class BattleManager extends Component {
             ])
             await this.generatePlayer(),
             await FaderManager.Instance.fadeOut()
+            this.inited=true
 
+        }else{
+            this.outBattle()
         }
+    }
+    async outBattle(){
+        await FaderManager.Instance.fadeIn()
+        director.loadScene(SCENE_ENUM.START)
     }
     //下一关
     nextLevel(){

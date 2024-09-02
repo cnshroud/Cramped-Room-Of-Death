@@ -99,6 +99,7 @@ export class DrawManager extends Component {
   mask(){
     this.setAlpha(1)
     return new Promise(resolve => {
+      //屏幕在默认时间一直都是黑的
       setTimeout(resolve,DEFAULT_FADE_DURATION)
     })
   }

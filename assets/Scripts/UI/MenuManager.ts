@@ -14,4 +14,12 @@ export class MenuManager extends Component {
       //撤回按钮
         EventManager.Instance.emit(EVENT_ENUM.REVOKE_STEP)
     }
+    handleRestart(){
+      //撤回按钮
+        EventManager.Instance.emit(EVENT_ENUM.RESTART_LEVEL)
+    }
+    handleQuit(){
+      //撤回按钮
+        EventManager.Instance.emit(EVENT_ENUM.OUT_BATTLE)
+    }
 }
