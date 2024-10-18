@@ -1,4 +1,4 @@
-import { find, game, RenderRoot2D } from "cc";
+import { find, game, RenderRoot2D, UITransform } from "cc";
 import Singleton from "../Base/Singleton";
 import { DEFAULT_FADE_DURATION, DrawManager } from "../Scripts/UI/DrawManager";
 import { createUINode } from "../Utils";
