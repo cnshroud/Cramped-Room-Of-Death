@@ -3,7 +3,7 @@ import Singleton from "../Base/Singleton";
 import { DEFAULT_FADE_DURATION, DrawManager } from "../Scripts/UI/DrawManager";
 import { createUINode } from "../Utils";
 //要调用drawManager就直接调用这个FaderManager就好了
-export class FaderManager extends Singleton{
+export default class FaderManager extends Singleton{
   static get Instance() {
     return super.GetInstance<FaderManager>()
   }

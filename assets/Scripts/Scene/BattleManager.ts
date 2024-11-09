@@ -13,7 +13,7 @@ import { IronSkeletonManager } from '../IronSkeleton/IronSkeletonManager';
 import { BurstManager } from '../Burst/BurstManager';
 import { SpikesManager } from '../Spikes/SpikesManager';
 import { SmokeManager } from '../Smoke/SmokeManager';
-import { FaderManager } from '../../Runtime/FaderManager';
+import  FaderManager  from '../../Runtime/FaderManager';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 import { StakeManager } from '../UI/StakeManager';
 const { ccclass, property } = _decorator;
@@ -24,7 +24,7 @@ export class BattleManager extends Component {
     //舞台节点
     stage:Node
     //判断渐入渐出动画是否已经加载过
-    private inited=false
+    private hasInited=false //第一次从菜单进来的时候，入场fade效果不一样，特殊处理一下
     private smokeLayer:Node
     onLoad(){
         //想加载哪一关改这一行就行了
@@ -69,8 +69,7 @@ export class BattleManager extends Component {
 
         if(level){
             //加入渐入渐出动画
-            if(this.inited){
-
+            if(this.hasInited){
                 await FaderManager.Instance.fadeIn()
              }else{
                 //让他一直黑着
@@ -95,7 +94,7 @@ export class BattleManager extends Component {
             ])
             await this.generatePlayer(),
             await FaderManager.Instance.fadeOut()
-            this.inited=true
+            this.hasInited=true
 
         }else{
             this.quitBattle()

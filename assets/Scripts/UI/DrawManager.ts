@@ -1,35 +1,33 @@
 
-import { _decorator, BlockInputEvents, Color, Component, game, Graphics,  Sprite,  SpriteFrame,  UITransform,  view } from 'cc';
+import { _decorator, BlockInputEvents, Color, Component, game, Graphics, Sprite, SpriteFrame, Texture2D, UITransform, view } from 'cc';
 const { ccclass, property } = _decorator;
 /**
  *切换下一关时的渐入渐出效果
  */
-// //直接设置固定值了，没跟随屏幕宽度
-// const SCREEN_WIDTH = 640
-// const SCREEN_HEIGHT = 960
-const SCREEN_WIDTH=view.getVisibleSize().width*2
-const SCREEN_HEIGHT=view.getVisibleSize().height*2
+//实在解决不了为什么渲染的时候graphics位置不对，所以直接把屏幕大小设置成4倍，把graphics的位置设置为屏幕大小的一半，让其超过屏幕
+const SCREEN_WIDTH = view.getVisibleSize().width * 4
+const SCREEN_HEIGHT = view.getVisibleSize().height * 4
 export const DEFAULT_FADE_DURATION = 200
 
 enum FadeStatus {
   IDLE,
-  FADE_IN ,
+  FADE_IN,
   FADE_OUT,
 }
 
 
 @ccclass('DrawManager')
 export class DrawManager extends Component {
-
   oldTime: number = 0
   duration: number = DEFAULT_FADE_DURATION              //持续时间
   fadeStatus: FadeStatus = FadeStatus.IDLE
   fadeResolve: (value: PromiseLike<null>) => void     //用于解决渐入渐出完成时的 Promise
-  faderNode:Node
+  faderNode: Node
   ctx: Graphics                                      //Graphics 组件实例，用于绘制
   block: BlockInputEvents                         //（BlockInputEvents 组件实例，用于在渐入渐出过程中阻止输入）。
 
-  //加载Graphics组件
+
+  //加载Graphics组件，换切其他写法
   init() {
     this.block = this.addComponent(BlockInputEvents)
     this.ctx = this.addComponent(Graphics)
@@ -42,7 +40,7 @@ export class DrawManager extends Component {
   //设置Graphics的位置大小和颜色
   private setAlpha(percent: number) {
     this.ctx.clear()
-    this.ctx.rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+    this.ctx.rect(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2,SCREEN_WIDTH, SCREEN_HEIGHT)
     this.ctx.fillColor = new Color(0, 0, 0, 255 * percent)
     this.ctx.fill()
     //如果percent为1，则启用block组件拦截节点接受输入事件，否则禁用
@@ -74,7 +72,7 @@ export class DrawManager extends Component {
         break
     }
   }
-
+  //渐进渐出
   fadeIn(duration: number = DEFAULT_FADE_DURATION) {
     this.setAlpha(0)
     this.duration = duration
@@ -90,15 +88,15 @@ export class DrawManager extends Component {
     this.duration = duration
     this.oldTime = game.totalTime
     this.fadeStatus = FadeStatus.FADE_OUT
-    return new Promise(resolve=> {
+    return new Promise(resolve => {
       this.fadeResolve = resolve
     })
   }
-  mask(){
+  mask() {
     this.setAlpha(1)
     return new Promise(resolve => {
       //屏幕在默认时间一直都是黑的
-      setTimeout(resolve,DEFAULT_FADE_DURATION)
+      setTimeout(resolve, DEFAULT_FADE_DURATION)
     })
   }
 }

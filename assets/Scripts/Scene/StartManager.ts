@@ -2,7 +2,7 @@
 import { _decorator, Component, director, Node, Scene } from 'cc';
 import { EventManager } from '../../Runtime/EventManager';
 import { CONTROLLER_ENUM, EVENT_ENUM, SCENE_ENUM } from '../../Enum';
-import { FaderManager } from '../../Runtime/FaderManager';
+import  FaderManager  from '../../Runtime/FaderManager';
 const { ccclass, property } = _decorator;
 /**
  *
